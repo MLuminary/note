@@ -159,11 +159,11 @@ document.documentElement.textContent
 
 `HTMLCollection` 与 `NodeList` 的区别有以下几点。
 
-1. HTMLCollection实例对象的成员只能是Element节点，NodeList实例对象的成员可以包含其他节点。
+1. `HTMLCollection` 实例对象的成员只能是 `Element` 节点，`NodeList` 实例对象的成员可以包含其他节点。
 
-2. HTMLCollection实例对象都是动态集合，节点的变化会实时反映在集合中。NodeList实例对象可以是静态集合。
+2.` HTMLCollection` 实例对象都是动态集合，节点的变化会实时反映在集合中。`NodeList` 实例对象可以是静态集合。
 
-3. HTMLCollection实例对象可以用id属性或name属性引用节点元素，NodeList只能使用数字索引引用。
+3. `HTMLCollection` 实例对象可以用 `id` 属性或 `name` 属性引用节点元素， `NodeList` 只能使用数字索引引用。
 
 ### ParentNode 接口，ChildNode 接口
 
@@ -216,5 +216,267 @@ replaceWith()
 
 `replaceWith` 方法使用参数指定的节点，替换当前节点。如果参数是节点对象，替换当前节点的就是该节点对象；如果参数是文本，替换当前节点的就是参数对应的文本节点。
 
+## Document 节点
+
+### 内部属性节点
+
+#### document.doctype
+
+`document` 对象的第一个子节点，包含了文档类型，通常 `document.firstChild` 返回这个节点
+
+#### document.documentElement
+
+`document` 对象的第二个子节点，对于HTML网页，返回 `<html>` 节点 
+
+#### document.defaultView 
+
+在浏览器中返回 `document` 对象所在的 `window` 对象，否则返回 `null`
+
+#### document.body,document.head
+
+document.head属性返回当前文档的 `<head>` 节点，`document.body` 属性返回当前文档的 `<body>`。
+
+#### document.activeElement
+
+`document.activeElement` 属性返回当前文档中获得焦点的那个元素。用户通常可以使用Tab键移动焦点，使用空格键激活焦点。比如，如果焦点在一个链接上，此时按一下空格键，就会跳转到该链接。
+
+### 节点集合属性
+
+#### document.links，document.forms，document.images，document.embeds
+
+`document.links` 属性返回当前文档所有设定了 `href` 属性的 `a` 及 `area` 元素。
+
+`document.forms` 属性返回页面中所有表单元素 `form`。
+
+`document.images` 属性返回页面所有图片元素（即 `img` 标签）。
+
+`document.embeds` 属性返回网页中所有嵌入对象，即 `embed` 标签。
+
+以上四个属性返回的都是 `HTMLCollection` 对象实例
+
+#### document.scripts，document.styleSheets
+
+`document.scripts` 属性返回当前文档的所有脚本（即 `script` 标签）。
+
+`document.scripts`返回的也是 `HTMLCollection` 实例。
+
+`document.styleSheets` 属性返回一个类似数组的对象，代表当前网页的所有样式表。每个样式表对象都有 `cssRules` 属性，返回该样式表的所有CSS规则，这样这可以操作具体的CSS规则了。
+
+### 文档信息属性
+
+#### document.documentURI，document.URL
+
+`document.documentURI` 属性和 `document.URL` 属性都返回一个字符串，表示当前文档的网址。不同之处是 `documentURI` 属性可用于所有文档（包括 XML 文档），`URL` 属性只能用于 `HTML` 文档。
+
+#### document.domain
+
+`document.domain` 属性返回当前文档的域名。比如，某张网页的网址是 http://www.example.com/hello.html ，`domain` 属性就等于 `www.example.com`。如果无法获取域名，该属性返回 `null`。
+
+#### document.lastModified
+
+`document.lastModified` 属性返回当前文档最后修改的时间戳，格式为字符串。
+
+注意，`lastModified` 属性的值是字符串，所以不能用来直接比较，两个文档谁的日期更新，需要用 `Date.parse` 方法转成时间戳格式，才能进行比较。
+
+#### document.location
+
+属性
+
+```js
+// 当前网址为 http://user:passwd@www.example.com:4097/path/a.html?x=111#part1
+document.location.href // "http://user:passwd@www.example.com:4097/path/a.html?x=111#part1"
+document.location.protocol // "http:"
+document.location.host // "www.example.com:4097"
+document.location.hostname // "www.example.com"
+document.location.port // "4097"
+document.location.pathname // "/path/a.html"
+document.location.search // "?x=111"
+document.location.hash // "#part1"
+document.location.user // "user"
+document.location.password // "passwd"
+```
+
+方法
+
+```js
+// 跳转到另一个网址
+document.location.assign('http://www.google.com')
+// 优先从服务器重新加载
+document.location.reload(true)
+// 优先从本地缓存重新加载（默认值）
+document.location.reload(false)
+// 跳转到新网址，并将取代掉history对象中的当前记录
+document.location.replace('http://www.google.com');
+// 将location对象转为字符串，等价于document.location.href
+document.location.toString()
+```
+
+#### document.referrer，document.title，document.characterSet
+
+`document.referrer` 属性返回一个字符串，表示当前文档的访问来源，如果是无法获取来源或是用户直接键入网址，而不是从其他网页点击，则返回一个空字符串。
+
+`document.referrer` 的值，总是与HTTP头信息的 `Referer` 保持一致，但是它的拼写有两个 `r` 。
+
+`document.title` 属性返回当前文档的标题，该属性是可写的。
+
+#### document.readyState
+
+`document.readyState` 属性返回当前文档的状态，共有三种可能的值。
+
+- `loading`：加载HTML代码阶段（尚未完成解析）
+- `interactive`：加载外部资源阶段时
+- `complete`：加载完成时
+
+#### document.designMode
+
+`document.designMode` 属性控制当前文档是否可编辑，通常用在制作所见即所得编辑器。打开 `iframe` 元素包含的文档的 `designMode` 属性，就能将其变为一个所见即所得的编辑器。
+
+#### document.implementation
+
+`document.implementation` 属性返回一个对象，用来甄别当前环境部署了哪些DOM相关接口。`implementation` 属性的 `hasFeature` 方法，可以判断当前环境是否部署了特定版本的特定接口。
+
+#### document.compatMode
+
+`compatMode`属性返回浏览器处理文档的模式，可能的值为`BackCompat`（向后兼容模式）和`CSS1Compat`（严格模式）。
+
+一般来说，如果网页代码的第一行设置了明确的`DOCTYPE`（比如`<!doctype html>`），`document.compatMode`的值都为`CSS1Compat`。
+
+#### document.cookie
+
+操作浏览器的Cookie
+
+### 读写相关的方法
+
+#### document.write()，document.writeln()
+
+如果页面已经解析完成（`DOMContentLoaded`事件发生之后），再调用`write`方法，它会先调用`open`方法，擦除当前文档所有内容，然后再写入。
+
+```js
+document.addEventListener('DOMContentLoaded', function (event) {
+  document.write('<p>Hello World!</p>');
+});
+
+// 等同于
+
+document.addEventListener('DOMContentLoaded', function (event) {
+  document.open();
+  document.write('<p>Hello World!</p>');
+  document.close();
+});
+```
+
+`document.writeln` 方法与 `write` 方法完全一致，除了会在输出内容的尾部添加换行符。
+
+### 查找节点的方法
+
+#### document.querySelector()，document.querySelectorAll()
+
+`document.querySelector` 方法接受一个CSS选择器作为参数，返回匹配该选择器的元素节点。如果有多个节点满足匹配条件，则返回第一个匹配的节点。如果没有发现匹配的节点，则返回 `null`。
+
+`document.querySelectorAll` 方法与 `querySelector` 用法类似，区别是返回一个 `NodeList` 对象，包含所有匹配给定选择器的节点。
+
+支持复杂的CSS选择器，但是不支持伪元素的选择器
+
+#### document.getElementsByTagName()
+
+`document.getElementsByTagName` 方法返回所有指定HTML标签的元素，返回值是一个类似数组的 `HTMLCollection` 对象，可以实时反映HTML文档的变化。如果没有任何匹配的元素，就返回一个空集。
+
+#### document.getElementsByClassName()
+
+`document.getElementsByClassName` 方法返回一个类似数组的对象（HTMLCollection实例对象），包括了所有 `class` 名字符合指定条件的元素，元素的变化实时反映在返回结果中。
+
+#### document.getElementsByName()
+
+`document.getElementsByName` 方法用于选择拥有 `name` 属性的HTML元素（比如`<form>`、`<radio>`、`<img>`、`<frame>`、`<embed>`和`<object>`等），返回一个类似数组的的对象（`NodeList`对象的实例），因为`name`属性相同的元素可能不止一个。
+
+#### getElementById()
+
+`getElementById` 方法返回匹配指定 `id` 属性的元素节点。如果没有发现匹配的节点，则返回 `null`。
+
+#### document.elementFromPoint()
+
+`document.elementFromPoint` 方法返回位于页面指定位置最上层的 `Element` 子节点。
+
+```js
+var element = document.elementFromPoint(50, 50);
+```
+
+上面代码选中在 `(50, 50)` 这个坐标位置的最上层的那个HTML元素。
 
 
+`elementFromPoint` 方法的两个参数，依次是相对于当前视口左上角的横坐标和纵坐标，单位是像素。如果位于该位置的HTML元素不可返回（比如文本框的滚动条），则返回它的父元素（比如文本框）。如果坐标值无意义（比如负值或超过视口大小），则返回 `null`。
+
+### 生成节点的方法
+
+#### document.createElement()
+
+`document.createElement` 方法用来生成网页元素节点。
+
+#### document.createTextNode()
+
+`document.createTextNode` 方法用来生成文本节点，参数为所要生成的文本节点的内容。
+
+这个方法可以确保返回的节点，被浏览器当作文本渲染，而不是当作 HTML 代码渲染。因此，可以用来展示用户的输入，避免 XSS 攻击。
+
+```js
+var div = document.createElement('div');
+div.appendChild(document.createTextNode('<span>Foo & bar</span>'));
+console.log(div.innerHTML)
+// &lt;span&gt;Foo &amp; bar&lt;/span&gt;
+```
+
+上面代码中，`createTextNode` 方法对大于号和小于号进行转义，从而保证即使用户输入的内容包含恶意代码，也能正确显示。
+
+`createTextNode` 方法不转义双引号
+
+#### document.createAttribute()
+
+`document.createAttribute` 方法生成一个新的属性对象节点，并返回它。
+
+参数是这个属性的名称
+
+#### document.createDocumentFragment()
+
+`createDocumentFragment` 方法生成一个DocumentFragment对象。
+
+`DocumentFragment `对象是一个存在于内存的DOM片段，但是不属于当前文档，常常用来生成较复杂的DOM结构，然后插入当前文档。这样做的好处在于，因为**`DocumentFragment` 不属于当前文档，对它的任何改动，都不会引发网页的重新渲染，比直接修改当前文档的DOM有更好的性能表现**。
+
+### 事件相关的方法
+
+#### document.createEvent()
+
+`document.createEvent` 方法生成一个事件对象，该对象可以被 `element.dispatchEvent` 方法使用，触发指定事件。
+
+#### document.addEventListener()，document.removeEventListener()，document.dispatchEvent()
+
+```js
+// 添加事件监听函数
+document.addEventListener('click', listener, false);
+
+// 移除事件监听函数
+document.removeEventListener('click', listener, false);
+
+// 触发事件
+var event = new Event('click');
+document.dispatchEvent(event);
+```
+
+### 其他方法
+
+#### document.hasFocus()
+
+`document.hasFocus` 方法返回一个布尔值，表示当前文档之中是否有元素被激活或获得焦点。
+
+#### document.createNodeIterator()，document.createTreeWalker()
+
+`document.createNodeIterator` 方法返回一个DOM的子节点遍历器。
+
+`document.createTreeWalker` 方法返回一个DOM的子树遍历器。它与`createNodeIterator` 方法的区别在于，后者只遍历子节点，而它遍历整个子树。
+
+#### document.adoptNode()
+
+`document.adoptNode` 方法将某个节点，从其原来所在的文档移除，插入当前文档，并返回插入后的新节点。
+
+#### document.importNode()
+
+`document.importNode` 方法从外部文档拷贝指定节点，插入当前文档。
