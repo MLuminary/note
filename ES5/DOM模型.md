@@ -480,3 +480,124 @@ document.dispatchEvent(event);
 #### document.importNode()
 
 `document.importNode` 方法从外部文档拷贝指定节点，插入当前文档。
+
+## Element 节点
+
+### 特征相关的属性
+
+#### Element.attributes
+
+`Element.attributes` 属性返回一个类似数组的对象，成员是当前元素节点的所有属性节点
+
+#### Element.id，Element.tagName
+
+`Element.id` 属性返回指定元素的 `id` 属性，该属性可读写
+
+`Element.tagName` 属性返回指定元素的大写标签名，与 `nodeName` 属性的值相等。
+
+#### Element.innerHTML
+
+`Element.innerHTML `属性返回该元素包含的 HTML 代码。该属性可读写，常用来设置某个节点的内容。
+
+**注意**
+
+如果文本节点中包含&、小于号和大于号，`innerHTML` 属性会将它们转为实体形式 `&amp;` 、 `&lt;` 、 `&gt;`。
+
+如果文本中含有 `<script>` 标签，虽然可以生成 `script` 节点，但是插入的代码不会执行，但是 `innerHTML` 还是有安全风险
+
+```js
+var name = "<img src=x onerror=alert(1)>";
+el.innerHTML = name;
+```
+
+上面代码中 `alert` 还是会执行的，因此为了安全考虑，如果插入的是文本，最好用 `textContent` 属性代替 `innerHTML`
+
+#### Element.outerHTML
+
+`Element.outerHTML` 属性返回一个字符串，内容为指定元素节点的所有 HTML 代码，包括它自身和包含的所有子元素。
+
+`outerHTML` 属性是可读写的，对它进行赋值，等于替换掉当前元素。
+
+```js
+// HTML代码如下
+// <div id="container"><div id="d">Hello</div></div>
+
+container = document.getElementById('container');
+d = document.getElementById("d");
+container.firstChild.nodeName // "DIV"
+d.nodeName // "DIV"
+
+d.outerHTML = '<p>Hello</p>';
+container.firstChild.nodeName // "P"
+d.nodeName // "DIV"
+```
+
+上面代码中，`outerHTML` 属性重新赋值以后，内层的 `div` 元素就不存在了，被 `p` 元素替换了。但是，变量 `d` 依然指向原来的 `div` 元素，这表示被替换的 `DIV` 元素还存在于内存中。
+
+#### Element.className , Element.classList
+
+```html
+<div class="one two three" id="myDiv"></div>
+```
+
+上面代码的 `className` 属性和 `classList` 属性如下
+
+```js
+document.getElementById('myDiv').className
+//'one two three'
+
+document.getElementById('myDiv').classList
+// {
+//   0: "one"
+//   1: "two"
+//   2: "three"
+//   length: 3
+// }
+```
+
+classList 对象有下列几种方法
+
+- `add()` : 增加一个class
+- `remove()` : 移除一个class
+- `contains()` : 检查当前元素是否包含某个class
+- `toggle()` : 将某个class移入或移出元素（如果存在就移除，不存在就添加）
+- `item()` : 返回指定索引位置的class
+- `toString()` : 将class的列表转为字符串
+
+### 盒装模型相关属性
+
+#### Element.clientHeight,Element.clientWidth
+
+返回元素节点可见部分的高度，不包括溢出(overflow)的大小
+
+这两个属性的值等元素的css高度（宽度）加上css的padding减去滚动条（如果存在滚动条），单位为像素。
+
+#### Element.clientLeft,Element.clientTop
+
+`Element.clientLeft` 属性等于元素节点左边框的宽度，`Element.clientTop` 属性等于元素节点顶部边框的宽度，单位为像素
+
+如果元素设置了 `display:inline` 它的 `clientLeft` 属性一律为 `0`
+
+#### Element.scrollLeft,Element.scrollTop
+
+`Element.scrollLeft`属性表示网页元素的水平滚动条向右侧滚动的像素，`Element.scrollTop`属性表示网页元素的垂直滚动条向下滚动的像素数量，对于没有滚动条的网页元素，这两个属性总是等于0
+
+如果要查看整张网页的水平的垂直的滚动距离，要从`document.documentElement` 元素上读取
+
+#### Element.scrollWidth,Element.scrollHeight
+
+`Element.scrollHeight` 属性返回某个网页元素的总高度，`Element.scrollWidth` 属性返回总宽度，可以理解成元素在垂直和水平两个方向上可以滚动的距离。它们都包括由于溢出容器而无法显示在网页上的那部分高度或宽度。这两个属性是只读属性。
+
+如果内容正好适合它的容器，没有溢出，那么 `Element.scrollHeight` 和 `Element.clientHeight` 是相等的，如果存在溢出，那么 `scrollHeight` 属性大于`clientHeight` 属性，宽度也是同样。
+
+当存在溢出的时候，滚动条滚动到内容底部时，下列表达式为  `true` 
+
+```js
+element.scrollHeight - element.scrollTop === element.clientHeight 
+```
+
+
+
+
+
+
