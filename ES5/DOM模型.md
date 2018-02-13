@@ -596,8 +596,86 @@ classList 对象有下列几种方法
 element.scrollHeight - element.scrollTop === element.clientHeight 
 ```
 
+#### Element.offsetHeight , Element.offsetWidth
+
+`Element.offsetHeight` 属性返回元素的垂直高度，`Element.offsetWidth` 属性返回水平宽度。`offsetHeight` 可以理解成元素左下角距离左上角的位移，`offsetWidth` 是元素右上角距离左上角的位移。它们的单位为像素，都是只读。
+
+这两个属性值包括 `Padding` 和 `Border` 、以及滚动条。这也意味着，如果不存在内容溢出，`Element.offsetHeight` 只比 `Element.clientHeight` 多了边框的高度。
+
+#### Element.offsetLeft，Element.offsetTop
+
+`Element.offsetLeft` 返回当前元素左上角相对于 `Element.offsetParent` 节点的水平位移，`Element.offsetTop` 返回垂直位移，单位为像素。通常，这两个值是指相对于父节点的位移。
 
 
+### 相关节点的属性
+
+#### Element.children，Element.childElementCount
+
+`Element.children` 属性返回一个 `HTMLCollection` 对象，包括当前元素节点的所有子元素
+
+这个属性与 `Node.childNodes` 属性的区别是，它只包括HTML元素类型的子节点，不包括其他类型的子节点。
+
+`Element.childElementCount` 属性返回当前元素节点包含的子HTML元素节点的个数，与`Element.children.length` 的值相同。注意，该属性只计算HTML元素类型的子节点。
+
+#### Element.firstElementChild，Element.lastElementChild
+
+`Element.firstElementChild` 属性返回第一个HTML元素类型的子节点，`Element.lastElementChild` 返回最后一个HTML元素类型的子节点
+
+#### Element.nextElementSibling，Element.previousElementSibling
+
+`Element.nextElementSibling` 属性返回当前HTML元素节点的后一个同级HTML元素节点
+
+`Element.previousElementSibling` 属性返回当前HTML元素节点的前一个同级HTML元素节点
 
 
+#### Element.offsetParent
 
+`Element.offsetParent` 属性返回当前 HTML 元素的最靠近的、并且 CSS 的 `position` 属性不等于 `static` 的上层元素
+
+如果该元素是不可见的（`display`属性为`none`），或者位置是固定的（`position`属性为`fixed`），则`offsetParent`属性返回`null`。
+
+### 属性相关的方法
+
+- `Element.getAttribute()`：读取指定属性
+- `Element.setAttribute()`：设置指定属性
+- `Element.hasAttribute()`：返回一个布尔值，表示当前元素节点是否有指定的属性
+- `Element.removeAttribute()`：移除指定属性
+
+### 查找相关方法
+
+- `Element.querySelector()`
+- `Element.querySelectorAll()`
+- `Element.getElementsByTagName()`
+- `Element.getElementsByClassName()`
+
+### 事件相关的方法
+
+- `Element.addEventListener()` ：添加事件的回调函数
+- `Element.removeEventListener()` ：移除事件监听函数
+- `Element.dispatchEvent()` ：触发事件
+
+### 其他方法
+
+#### Element.scrollIntoView()
+
+`Element.scrollIntoView` 方法滚动当前元素，进入浏览器的可见区域，类似于设置`window.location.hash` 的效果。
+
+#### Element.getBoundingClientRect()
+
+`Element.getBoundingClientRect` 方法返回一个对象，该对象提供当前元素节点的大小、位置等信息，基本上就是CSS盒状模型提供的所有信息。
+
+#### Element.getClientRects()
+
+`Element.getClientRects` 方法返回一个类似数组的对象，里面是当前元素在页面上形成的所有矩形。每个矩形都有 `bottom` 、 `height` 、 `left` 、 `right` 、 `top` 和 `width` 六个属性，表示它们相对于视口的四个坐标，以及本身的高度和宽度。
+
+#### Element.insertAdjacentHTML()
+
+`Element.insertAdjacentHTML` 方法解析HTML字符串，然后将生成的节点插入DOM树的指定位置。
+
+#### Element.remove()
+
+`Element.remove` 方法用于将当前元素节点从DOM树删除。
+
+#### Element.focus()
+
+`Element.focus` 方法用于将当前页面的焦点，转移到指定元素上。
