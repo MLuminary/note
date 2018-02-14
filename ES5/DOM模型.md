@@ -745,3 +745,67 @@ n.dataset.foo = 'baz'
 `data-` 后面的属性名有限制，只能包含字母、数字、连词线（`-`）、点（`.`）、冒号（`:`）和下划线（`_`）。而且，属性名不应该使用 `A` 到 `Z` 的大写字母，比如不能有 `data-helloWorld` 这样的属性名，而要写成 `data-hello-world`。
 
 转成 `dataset` 的键名时，连词线后面如果跟着一个小写字母，那么连词线会被移除，该小写字母转为大写字母，其他字符不变。反过来，`dataset` 的键名转成属性名时，所有大写字母都会被转成连词线+该字母的小写形式，其他字符不变。比如，`dataset.helloWorld` 会转成 `data-hello-world`。
+
+## Text 节点和 DocumentFragment 节点
+
+### Text 节点的概念 
+
+`Text` 节点代表 `Element` 节点和 `Attribute` 节点的文本内容。如果一个节点只包含一段文本，那么它就有一个 `Text` 子节点，代表该节点的文本内容。由于空格也是一个字符，所以哪怕有一个空格，也会形成 `Text` 节点
+
+### Text 节点的属性
+
+#### data
+
+`data` 属性等同于 `nodeValue` 属性，用来设置或读取 `Text` 节点的内容。
+
+#### wholeText
+
+`wholeText` 属性将当前 `Text` 节点与毗邻的 `Text` 节点，作为一个整体返回
+
+
+```html
+<p id="para">A <em>B</em> C</p>
+```
+
+```js
+var el = document.getElementById("para");
+el.firstChild.wholeText // "A "
+el.firstChild.data // "A "
+```
+
+但是，一旦移除em节点，`wholeText` 属性与 `data` 属性就会有差异，因为这时其实P节点下面包含了两个毗邻的 `Text` 节点。
+
+```js
+el.removeChild(para.childNodes[1]);
+el.firstChild.wholeText // "A C"
+el.firstChild.data // "A "
+```
+
+
+### Text 节点的方法
+
+`appendData` 方法用于在 `Text` 节点尾部追加字符串。
+
+`deleteData` 方法用于删除 `Text` 节点内部的子字符串，第一个参数为子字符串位置，第二个参数为子字符串长度。
+
+`insertData` 方法用于在 `Text` 节点插入字符串，第一个参数为插入位置，第二个参数为插入的子字符串。
+
+`replaceData` 方法用于替换文本，第一个参数为替换开始位置，第二个参数为需要被替换掉的长度，第三个参数为新加入的字符串。
+
+`subStringData` 方法用于获取子字符串，第一个参数为子字符串在 `Text` 节点中的开始位置，第二个参数为子字符串长度。
+
+`remove` 方法用于移除当前Text节点。
+
+`splitText` 方法将 `Text` 节点一分为二，变成两个毗邻的 `Text` 节点。它的参数就是分割位置（从零开始），分割到该位置的字符前结束。如果分割位置不存在，将报错。
+
+`normalize` 方法可以将毗邻的两个 `Text` 节点合并。
+
+### DocumentFragment 节点
+
+`DocumentFragment` 节点对象没有自己的属性和方法，全部继承自 `Node` 节点和`ParentNode` 接口。也就是说，`DocumentFragment` 节点比 `Node` 节点多出以下四个属性。
+
+`children`：返回一个动态的 `HTMLCollection` 集合对象，包括当前 `DocumentFragment` 对象的所有子元素节点。
+`firstElementChild`：返回当前`DocumentFragment`对象的第一个子元素节点，如果没有则返回`null`。
+`lastElementChild`：返回当前`DocumentFragment`对象的最后一个子元素节点，如果没有则返回`null`。
+`childElementCount`：返回当前`DocumentFragment`对象的所有子元素数量。
+
