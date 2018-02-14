@@ -679,3 +679,69 @@ element.scrollHeight - element.scrollTop === element.clientHeight
 #### Element.focus()
 
 `Element.focus` 方法用于将当前页面的焦点，转移到指定元素上。
+
+## 属性的操作
+
+### Element.attributes 属性
+
+返回一个类似数组的动态对象，成员是该元素标签的所有属性节点对象，属性的实时变化都会反映在这个节点对象上，其他类型的节点对象，虽然也有 `attribute` 属性，但是返回的都是 `null`
+
+属性节点对象有 `name` 和 `value` 属性，对应该属性的属性名和属性值。等同于 `nodeName` 属性和 `nodeValue` 属性
+
+### 元素节点对象的属性
+
+```js
+img.src
+a.href
+```
+
+这种写法虽然可以读写 HTML 属性，但是无法删除属性， `delete` 运算符在这里不会生效
+
+HTML 元素的属性名是大小写不敏感的，但是 JavaScript 对象的属性名是大小写敏感的。转为 JavaScript 属性名时，一律采用小写，如果属性名包括多个单词，采用驼峰拼写法
+
+有些 HTML 属性名是 JavaScript 的保留字，转为 JavaScript 属性时，必须改名
+
+- `for` 属性改为 `htmlFor`
+- `class` 属性改为 `className`
+
+
+### 属性操作的标准方法
+
+#### getAttribute()
+
+返回当前元素节点的指定属性，只返回字符串，HTML 标签对象的属性会返回各种类型的值。
+
+#### setAttribute()
+
+`Element.setAttribute` 方法用于为当前元素节点新增属性。如果同名属性已存在，则相当于编辑已存在的属性。
+
+
+#### hasAttribute()
+
+`Element.hasAttribute` 方法返回一个布尔值，表示当前元素节点是否包含指定属性。
+
+#### removeAttribute()
+
+`Element.removeAttribute` 方法用于从当前元素节点移除属性。
+
+### dataset 属性
+
+```html
+<div id="mydiv" data-foo="bar">
+```
+
+```js
+var n = document.getElementById('mydiv');
+n.dataset.foo // bar
+n.dataset.foo = 'baz'
+```
+
+可以通过 `dateset.foo` 读写 `data-foo` 属性
+
+删除一个 `data-*` 属性，可以直接用 `delete` 命令
+
+**注意**
+
+`data-` 后面的属性名有限制，只能包含字母、数字、连词线（`-`）、点（`.`）、冒号（`:`）和下划线（`_`）。而且，属性名不应该使用 `A` 到 `Z` 的大写字母，比如不能有 `data-helloWorld` 这样的属性名，而要写成 `data-hello-world`。
+
+转成 `dataset` 的键名时，连词线后面如果跟着一个小写字母，那么连词线会被移除，该小写字母转为大写字母，其他字符不变。反过来，`dataset` 的键名转成属性名时，所有大写字母都会被转成连词线+该字母的小写形式，其他字符不变。比如，`dataset.helloWorld` 会转成 `data-hello-world`。
