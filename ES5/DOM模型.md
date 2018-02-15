@@ -809,3 +809,196 @@ el.firstChild.data // "A "
 `lastElementChild`：返回当前`DocumentFragment`对象的最后一个子元素节点，如果没有则返回`null`。
 `childElementCount`：返回当前`DocumentFragment`对象的所有子元素数量。
 
+## 事件模型
+
+### EventTarget 接口
+
+DOM的事件操作（监听和触发），都定义在 `EventTarget` 接口。`Element` 节点、 `document` 节点和 `window` 对象，都部署了这个接口
+
+- addEventListener 绑定事件的监听函数
+- removeEventListener 移除事件的监听函数
+- dispatchEvent 触发事件
+
+### addEventListener
+
+接受三个参数
+
+- `type`：事件名称，大小写敏感。
+- `listener`：监听函数。事件发生时，会调用该监听函数。
+- `useCapture`：布尔值，表示监听函数是否在捕获阶段（capture）触发（参见后文《事件的传播》部分），默认为`false`（监听函数只在冒泡阶段被触发）。老式浏览器规定该参数必写，较新版本的浏览器允许该参数可选。为了保持兼容，建议总是写上该参数。
+
+### removeEventListener()
+
+`removeEventListener` 方法用来移除 `addEventListener` 方法添加的事件监听函数。
+
+### dispatchEvent()
+
+`dispatchEvent` 方法在当前节点上触发指定事件，从而触发监听函数的执行。该方法返回一个布尔值，只要有一个监听函数调用了 `Event.preventDefault()` ，则返回值为`false`，否则为 `true` 。
+
+### 监听函数
+
+事件发生时，程序所要执行的函数
+
+#### HTML 标签的 on- 属性
+
+使用这种发放时 `on-` 属性的值是将会执行的代码，而不是一个函数
+
+```html
+<!-- 正确 -->
+<body onload="doSomething()">
+
+<!-- 错误 -->
+<body onload="doSomething">
+```
+
+#### Element 节点的事件属性
+
+```js
+div.onclick = function(event){
+  //...
+}
+```
+
+只会在冒泡阶段触发
+
+#### addEventListener方法
+
+第一种“HTML标签的on-属性”，违反了HTML与JavaScript代码相分离的原则；第二种“Element节点的事件属性”的缺点是，同一个事件只能定义一个监听函数，也就是说，如果定义两次onclick属性，后一次定义会覆盖前一次。因此，这两种方法都不推荐使用，除非是为了程序的兼容问题，因为所有浏览器都支持这两种方法。
+
+addEventListener是推荐的指定监听函数的方法。它有如下优点：
+
+可以针对同一个事件，添加多个监听函数。
+
+能够指定在哪个阶段（捕获阶段还是冒泡阶段）触发回监听函数。
+
+除了DOM节点，还可以部署在`window`、`XMLHttpRequest`等对象上面，等于统一了整个JavaScript的监听函数接口。
+
+#### this 对象的指向
+
+以下写法的 `this` 对象都指向 Element 节点
+
+```js
+element.onclick = print
+element.addEventListener('click',print,false)
+element.onclick = function(){console.log(this.id)}
+
+<element onclick="console.log(this.id)">
+```
+
+以下写法的 `this` 对象，都指向全局对象
+
+```js
+element.onclick = function(){print()}
+element.setAttribute('onclick','print()')
+
+<element onclick="print()">
+```
+
+### 事件的传播
+
+#### 传播的三个阶段
+
+第一阶段 
+
+从 window 对象传导到目标节点，称为「捕获」阶段
+
+第二阶段
+
+在目标节点触发，称为「目标」阶段
+
+第三阶段
+
+从目标节点传导回 window 对象，成为「冒泡」阶段
+
+```html
+<div>
+  <p>Click Me</p>
+</div>
+``` 
+
+- 捕获阶段：事件从`<div>`向`<p>`传播时，触发`<div>`的`click`事件；
+- 目标阶段：事件从`<div>`到达`<p>`时，触发`<p>`的click事件；
+- 目标阶段：事件离开`<p>`时，触发`<p>`的`click`事件；
+- 冒泡阶段：事件从`<p>`传回`<div>`时，再次触发`<div>`的`click`事件
+
+用户点击时，浏览器总是假定 `click` 事件的目标节点就是点击位置的嵌套最深的那个节点。所以 `<p>` 节点的捕获阶段和冒泡阶段会是 `target` 阶段
+
+事件传播的最上层对象是 `window` 接着依次是 `document` `body` 如果 `<body>` 元素中有一个 `<div>` 元素,点击该元素，在捕获阶段为 `window`、`document`、`html`、`body`、`div` ， 在冒泡阶段依次为 `div`、`body`、`html`、`document`、`window`。
+
+#### 事件的代理
+
+由于事件会在冒泡阶段向上传播到父节点，因此可以把子节点的监听函数定义在父节点上，由父节点的监听函数统一处理多个子元素的事件。这种方法叫做事件的代理（delegation）。
+
+如果希望事件到某个节点为止不再传播，可以使用事件对象的 `stopPropagation` 方法。
+但是 `stopPropagation` 方法只会阻止当前监听函数的传播，不会阻止节点上的其它同样事件的监听函数，如果想要不再触发那些监听函数，可以使用 `stopImmediatePropagation` 
+
+### Event 对象
+
+事件发生以后，会生成一个事件对象，作为参数传给监听函数。浏览器原生提供了一个 `Event` 对象，所有的事件都是这个对象的实例，或者说继承了 `Event.prototype` 对象
+
+```js
+event = new Event(typeArg,eventInit)
+```
+
+`Event`构造函数接受两个参数。第一个参数是字符串，表示事件的名称；第二个参数是一个对象，表示事件对象的配置。该参数可以有以下两个属性。
+
+- `bubbles`：布尔值，可选，默认为`false`，表示事件对象是否冒泡。
+- `cancelable`：布尔值，可选，默认为`false`，表示事件是否可以被取消。
+
+#### event 属性
+
+`bubbles` 属性返回一个布尔值，表示当前事件是否会冒泡。该属性为只读属性，只能在新建事件时改变。除非显式声明，Event构造函数生成的事件，默认是不冒泡的。
+
+`eventPhase` 属性返回一个整数值，表示事件目前所处的阶段。
+
+- 0，事件目前没有发生。
+- 1，事件目前处于捕获阶段，即处于从祖先节点向目标节点的传播过程中。该过程是从`Window`对象到`Document`节点，再到`HTMLHtmlElement`节点，直到目标节点的父节点为止。
+- 2，事件到达目标节点，即`target`属性指向的那个节点。
+- 3，事件处于冒泡阶段，即处于从目标节点向祖先节点的反向传播过程中。该过程是从父节点一直到`Window`对象。只有`bubbles`属性为`true`时，这个阶段才可能发生。
+
+`cancelable` 属性返回一个布尔值，表示事件是否可以取消。该属性为只读属性，只能在新建事件时改变。除非显式声明，`Event`构造函数生成的事件，默认是不可以取消的
+
+`defaultPrevented` 属性返回一个布尔值，表示该事件是否调用过 `preventDefault` 方法。。
+
+
+#### event.currentTarget，event.target
+
+`currentTarget` 属性返回事件当前所在的节点，即正在执行的监听函数所绑定的那个节点，`target` 属性返回事件正发生的节点
+
+```js
+function hide(e){
+  console.log(this === e.target);  // 有可能不是true
+  e.target.style.visibility = "hidden";
+}
+
+// HTML代码为
+// <p id="para">Hello <em>World</em></p>
+para.addEventListener('click', hide, false);
+```
+
+点击 World 会隐藏 `<em>` 节点，`event.currentTarget` 为 `<p>` ，`event.target` 为 `<em>` 节点
+
+在 IE6-IE8 中，该属性的名字不是 `target` ，而是 `srcElement`。
+
+#### event.type，event.detail，event.timeStamp，event.isTrusted
+
+
+`type` 属性返回一个字符串，表示事件类型，大小写敏感。
+
+`detail` 属性返回一个数值，表示事件的某种信息。具体含义与事件类型有关，对于鼠标事件，表示鼠标按键在某个位置按下的次数，比如对于`dblclick`事件，`detail`属性的值总是`2`。
+
+`timeStamp` 属性返回一个毫秒时间戳，表示事件发生的时间。
+
+`isTrusted` 属性返回一个布尔值，表示该事件是否为真实用户触发。
+
+#### event.preventDefault()
+
+`preventDefault` 方法取消浏览器对当前事件的默认行为，比如点击链接后，浏览器跳转到指定页面，或者按一下空格键，页面向下滚动一段距离。该方法生效的前提是，事件对象的`cancelable`属性为`true`，如果为`false`，则调用该方法没有任何效果。
+
+#### event.stopPropagation()
+
+`stopPropagation` 方法阻止事件在 DOM 中继续传播，防止再触发定义在别的节点上的监听函数，但是不包括在当前节点上新定义的事件监听函数。
+
+#### event.stopImmediatePropagation()
+
+`stopImmediatePropagation` 方法阻止同一个事件的其他监听函数被调用。
