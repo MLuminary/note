@@ -1002,3 +1002,28 @@ para.addEventListener('click', hide, false);
 #### event.stopImmediatePropagation()
 
 `stopImmediatePropagation` 方法阻止同一个事件的其他监听函数被调用。
+
+## 事件种类
+
+### 鼠标事件
+
+#### onclick ,dblclick
+
+鼠标单击定义为用户在同一个位置完成一次 `mousedown` 和 `mouseup` 动作。 他们的触发顺序是 `mousedown` 首先触发， `mouseup` 接着触发 `click` 最后触发
+
+`dblclick` 事件当用户在 `element`、`document`、`window` 对象上，双击鼠标时触发。该事件会在 `mousedown`、`mouseup`、`click`之后触发。
+
+#### mouseup mousedown mousemove
+
+`mouseup` 事件在释放按下的鼠标键时触发。
+
+`mousedown` 事件在按下鼠标键时触发。
+
+`mousemove` 事件当鼠标在一个节点内部移动时触发。当鼠标持续移动时，该事件会**连续触发**。为了避免性能问题，建议对该事件的监听函数做一些限定，比如限定一段时间内只能运行一次代码。
+
+#### mouseover mouseenter
+
+`mouseover`事件和`mouseenter`事件，都是鼠标**进入一个节点时触发**。
+
+两者的区别是，`mouseenter`事件只触发一次，而只要鼠标在节点内部移动，`mouseover` 事件会在**子节点上触发多次**。
+

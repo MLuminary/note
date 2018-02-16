@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    #test {
+      width: 800px;
+      height: 400px;
+      background-color: #000;
+    }
+    ul{
+      padding: 0;
+      width: 800px;
+      list-style: none;
+      height: 400px;
+    }
+    li{
+
+      float: left;
+      height: 40px;
+      width: 100%;
+      margin-top: 10px;
+      background-color: green;
+    }
+  </style>
+</head>
+<body>
+  <div id='test'>
+    <ul>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+  </div>
+  <script>
+    var test = document.getElementById('test');
+
+    test.addEventListener('mousemove',function(){
+      console.log('move');
+    })
+    test.addEventListener('mouseover',function(){
+      console.log('over');
+    })
+  </script>
+</body>
+</html>
