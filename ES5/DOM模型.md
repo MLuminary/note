@@ -1414,6 +1414,218 @@ resize事件在改变浏览器窗口大小时触发，发生在window、body、f
 - focusin事件：Element节点将要获得焦点时触发，发生在focus事件之前。该事件会冒泡。Firefox不支持该事件。
 - focusout事件：Element节点将要失去焦点时触发，发生在blur事件之前。该事件会冒泡。Firefox不支持该事件。
 
+## CSS 操作
+
+### style 属性
+
+操作 CSS 样式最简单的方法，就是使用网页元素节点的 `getAttribute` 方法、 `setAttribute` 方法和 `removeAttribute` 方法，直接读写或删除网页元素的 `style` 属性。
+
+```js
+div.setAttribute(
+  'style',
+  'background-color:red;' + 'border:1px solid black;'
+);
+```
+
+### Style 对象
+
+```js
+var divStyle = document.querySelector('div').style;
+```
+
+这个 `style` 对象可以直接操作，但是名字需要改写，比如 `background-color` 写成 `backgroundColor`。如果CSS属性是JavaScript保留字，那规则名之前需要加上字符串`css` ，比如 `float` 写成 `cssFloat` 
+
+#### cssText 属性
+
+元素节点对象的 `style` 对象，有一个 `cssText` 属性，可以读写或删除整个样式。
+
+```js
+var divStyle = document.querySelector('div').style;
+
+divStyle.cssText = 'background-color: red;'
+  + 'border: 1px solid black;'
+  + 'height: 100px;'
+  + 'width: 100px;';
+```
+
+`cssText` 的属性值不用改写 CSS 属性名
+
+#### CSS 模块的侦测
+
+CSS的规格发展太快，新的模块层出不穷。不同浏览器的不同版本，对CSS模块的支持情况都不一样。有时候，需要知道当前浏览器是否支持某个模块，这就叫做「CSS模块的侦测」。
+
+#### setProperty()，getPropertyValue()，removeProperty()
+
+- `setProperty(propertyName,value)` ：设置某个CSS属性。
+- `getPropertyValue(propertyName)` ：读取某个CSS属性。
+- `removeProperty(propertyName)` ：删除某个CSS属性。 
+
+#### window.getComputedStyle()
+
+`window.getComputedStyle` 方法，就用来返回这个规则。它接受一个DOM节点对象作为参数，返回一个包含该节点最终样式信息的对象。所谓“最终样式信息”，指的是各种CSS规则叠加后的结果。
+
+`getComputedStyle` 方法还可以接受第二个参数，表示指定节点的伪元素（比如`:before`、`:after`、`:first-line`、`:first-letter` 等）
+
+**注意**
+
+- 返回的CSS值都是绝对单位，比如，长度都是像素单位（返回值包括px后缀），颜色是 `rgb(#, #, #)` 或 `rgba(#, #, #, #)` 格式。
+- CSS规则的简写形式无效，比如，想读取 `margin` 属性的值，不能直接读，只能读 `marginLeft`、`marginTop` 等属性。
+- 如果一个元素不是绝对定位， `top` 和 `left` 属性总是返回 `auto` 。
+- 该方法返回的样式对象的 `cssText` 属性无效，返回 `undefined` 。
+- 该方法返回的样式对象是只读的，如果想设置样式，应该使用元素节点的 `style` 属性。
+
+### CSS 伪元素
+
+CSS伪元素是通过CSS向DOM添加的元素，主要方法是通过 `:before` 和 `:after` 选择器生成伪元素，然后用 `content` 属性指定伪元素的内容。
+
+### StyleSheet对象
+
+#### 获取样式表
+
+`document.styleSheets` 返回当前页面所有 `StyleSheet` 对象。是一个类数组对象
+
+#### 属性
+
+**media**
+
+`media` 属性表示这个样式表是用于屏幕（screen），还是用于打印（print），或两者都适用（all）。该属性只读，默认值是 `screen`。
+
+**disabled**
+
+`disabled` 属性用于打开或关闭一张样式表。`disabled` 属性只能在 JavaScript 脚本中设置，不能在 HTML 语句中设置。
+
+**href**
+
+`href` 属性是只读属性，返回 `StyleSheet` 对象连接的样式表地址。对于内嵌的 `<style>` 节点，该属性等于 `null` 。
+
+**title**
+
+`title` 属性返回 `StyleSheet` 对象的 `title` 值。
+
+**type属性**
+
+`type` 属性返回 `StyleSheet` 对象的 `type` 值，通常是 `text/css`。
+
+**parentStyleSheet**
+
+CSS的 `@import` 命令允许在样式表中加载其他样式表。`parentStyleSheet` 属性返回包含了当前样式表的那张样式表。如果当前样式表是顶层样式表，则该属性返回 `null`。
+
+**ownerNode**
+
+`ownerNode` 属性返回 `StyleSheet` 对象所在的DOM节点，通常是 `<link>` 或 `<style>`。对于那些由其他样式表引用的样式表，该属性为 `null`。
+
+```js
+// HTML代码为
+// <link rel="StyleSheet" href="example.css" type="text/css" />
+
+document.styleSheets[0].ownerNode // [object HTMLLinkElement]
+```
+
+**cssRules**
+
+`cssRules` 属性指向一个类似数组的对象，里面每一个成员就是当前样式表的一条CSS规则。使用该规则的 `cssText` 属性，可以得到CSS规则对应的字符串。
+
+#### insertRule()，deleteRule()
+
+`insertRule` 方法用于在当前样式表的 `cssRules` 对象插入CSS规则，`deleteRule` 方法用于删除 `cssRules` 对象的CSS规则。
+
+`insertRule` 方法的第一个参数是表示CSS规则的字符串，第二个参数是该规则在`cssRules` 象的插入位置，是一个数值。`deleteRule` 方法的参数是该条规则在`cssRules` 对象中的位置。
+
+#### 添加样式表
+
+添加内部样式表 `<style>` 节点
+
+```js
+var style = document.createElement('style');
+style.setAttribute('media','screen');
+style.setAttribute('media','@media only screen and (max-width : 1024px)');
+style.innerHTML = 'body{color:red}';
+document.head.appendChild(style);
+```
+
+添加外部样式表，在文档中添加 `<link>` 节点
+
+```js
+var linkElm = document.createElement('link');
+linkElm.setAttribute('rel', 'stylesheet');
+linkElm.setAttribute('type', 'text/css');
+linkElm.setAttribute('href', 'reset-min.css');
+
+document.head.appendChild(linkElm);
+```
+
+### CSS 规则
+
+一条CSS规则包括两个部分：CSS选择器和样式声明。下面就是一条典型的CSS规则。
+
+```css
+.myClass {
+  background-color: yellow;
+}
+```
+
+### window.matchMedia()
+
+`window.matchMedia` 方法用来检查CSS的 `mediaQuery` 语句
+
+```js
+var result = window.matchMedia('(min-width: 600px)');
+result.media // (min-width: 600px)
+result.matches // true
+```
+
+`media` 返回所查询的 `mediaQuery` 语句字符串，`matches` 返回一个布尔值，表示当前环境是否匹配查询语句
+
+```js
+var result = window.matchMedia('(max-width: 700px)');
+
+if (result.matches) {
+  console.log('页面宽度小于等于700px');
+} else {
+  console.log('页面宽度大于700px');
+}
+```
+
+#### 监听事件
+
+`window.matchMedia` 方法返回的 `MediaQueryList` 对象有两个方法，用来监听事件：`addListener` 方法和 `removeListener` 方法。如果 `mediaQuery` 查询结果发生变化，就调用指定的回调函数。
+
+```js
+var mql = window.matchMedia("(max-width: 700px)");
+
+mql.addListener(mqCallback);
+
+//...
+```
+
+### CSS事件
+
+#### transitionEnd 事件
+
+css的过渡效果「transition」结束后，触发 `transitionEnd` 事件
+
+```js
+el.addEventListener('transitionend', onTransitionEnd, false);
+
+function onTransitionEnd() {
+  console.log('Transition end');
+}
+```
+
+`transitionEnd` 的事件对象具有以下属性。
+
+- `propertyName` ：发生 `transition` 效果的CSS属性名。
+- `elapsedTime` ：`transition` 效果持续的秒数，不含 `transition-delay` 的时间。
+- `pseudoElement` ：如果 `transition` 效果发生在伪元素，会返回该伪元素的名称，以「::」开头。如果不发生在伪元素上，则返回一个空字符串。
+
+#### animationstart事件，animationend事件，animationiteration事件
+
+- animationstart : 动画开始时触发
+- animationend : 动画结束时触发
+- animationiteration : 开始新一轮动画循环时触发。如果animationiteration-count属性等于1，该事件不触发，即只播放一轮的CSS动画，不触发animationiteration事件
+
+
+
 
 
 
