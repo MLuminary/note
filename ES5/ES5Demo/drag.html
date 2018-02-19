@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    .dropzone {
+      width: 100px;
+      height: 50px;
+      background-color: red;
+      margin-top: 20px;
+    }
+    #draggable {
+      width: 100px;
+      height: 25px;
+      background-color: green;
+    }
+  </style>
+</head>
+<body>
+  <div class="dropzone">
+    <div id="draggable" draggable="true">
+      该节点可拖拉
+    </div>
+  </div>
+  <div class="dropzone"></div>
+  <div class="dropzone"></div>
+  <div class="dropzone"></div>
+  <script>
+    //保存拖拉的对象
+    var dragEvent;
+    
+    document.addEventListener('dragstart',function(e){
+      dragEvent = e.target;
+      //兼容Firefox
+      e.dataTransfer.setData('text/plain','anything');
+    },false);
+
+    document.addEventListener('dragover',function(e){
+      //允许被拖拉的节点放入目标节点
+      e.preventDefault();
+    },false);
+
+    document.addEventListener('dragenter',function(e){
+      //进入目标节点，目标节点背景变成橙色
+      if(e.target.className == 'dropzone'){
+        e.target.style.background = "orange"
+      }
+    },false)
+
+    document.addEventListener('dragleave',function(e){
+      //离开目标节点，目标节点颜色变回
+      if(e.target.className == 'dropzone'){
+        e.target.style.background = "red"
+      }
+    },false)
+
+    document.addEventListener('drop',function(e){
+      //防止事件默认行为（比如某些Elment节点上可以打开链接）
+      e.preventDefault();
+
+      if(e.target.className === 'dropzone'){
+        e.target.style.background = "red"
+        dragEvent.parentNode.removeChild(dragEvent);
+        e.target.appendChild(dragEvent);
+      }
+    },false)
+  </script>
+</body>
+</html>
