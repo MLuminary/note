@@ -1021,9 +1021,400 @@ para.addEventListener('click', hide, false);
 
 `mousemove` 事件当鼠标在一个节点内部移动时触发。当鼠标持续移动时，该事件会**连续触发**。为了避免性能问题，建议对该事件的监听函数做一些限定，比如限定一段时间内只能运行一次代码。
 
-#### mouseover mouseenter
+#### mouseover，mouseenter
 
 `mouseover`事件和`mouseenter`事件，都是鼠标**进入一个节点时触发**。
 
 两者的区别是，`mouseenter`事件只触发一次，而只要鼠标在节点内部移动，`mouseover` 事件会在**子节点上触发多次**。
+
+#### mouseout，mouseleave 
+
+`mouseout` 事件和 `mouseleave` 事件，都是鼠标离开一个节点时触发。
+
+两者的区别是，`mouseout` 事件会冒泡，`mouseleave` 事件不会。子节点的 `mouseout` 事件会冒泡到父节点，进而触发父节点的 `mouseout` 事件。`mouseleave` 事件就没有这种效果，所以离开子节点时，不会触发父节点的监听函数。
+
+#### contextmenu 事件
+
+`contextmenu` 事件在一个节点上点击鼠标右键时触发，或者按下「上下文菜单」键时触发。
+
+### MouseEvent 对象
+
+#### altKey，ctrlKey，metaKey，shiftKey
+
+以下属性返回一个布尔值，表示鼠标事件发生时，是否同时按下某个键。
+
+- `altKey` 属性 ：Alt 键
+- `ctrlKey` 属性 ：Ctrl 键
+- `metaKey` 属性 ：Meta 键（Mac键盘是一个四瓣的小花，Windows键盘是Windows键）
+- `shiftKey` 属性 ：Shift 键
+
+#### button，buttons
+
+`button` 属性返回一个数值，表示按下了鼠标哪个键。
+
+- -1：没有按下键。
+- 0：按下主键（通常是左键）。
+- 1：按下辅助键（通常是中键或者滚轮键）。
+- 2：按下次键（通常是右键）。
+
+`buttons` 属性返回一个3个比特位的值，表示**同时按下了哪些键**。它用来处理同时按下多个鼠标键的情况。
+
+- 1：二进制为001，表示按下左键。
+- 2：二进制为010，表示按下右键。
+- 4：二进制为100，表示按下中键或滚轮键。
+
+同时按下多个键的时候，每个按下的键对应的比特位都会有值。比如，同时按下左键和右键，会返回3（二进制为011）。
+
+#### clientX，clientY
+
+`clientX`，`clientY` 属性返回鼠标位置相对于浏览器窗口左上角的水平垂直坐标，单位为像素，与页面是否横向滚动无关。
+
+#### movementX，movementY
+
+`movementX` 属性返回一个水平位移，单位为像素，表示当前位置与上一个 `mousemove` 事件之间的水平距离。在数值上，等于 `currentEvent.movementX` = `currentEvent.screenX` - `previousEvent.screenX`。
+
+#### screenX，screenY
+
+`screenX`，`screenY` 属性返回鼠标位置相对于屏幕左上角的水平坐标，单位为像素。
+
+### Wheel 事件
+
+`Wheel` 事件是与鼠标滚轮相关的事件，目前只有一个 `Wheel` 事件。用户滚动滚轮，触发此事件
+
+该事件继承了 MouseEvent ，UIEvent ，Event 属性 ，还有几个自己的属性
+
+- deltaX : 返回一个数值，表示一个滚轮的水平滚动量
+- deltxY : 返回一个数值，表示一个滚轮的垂直滚动量
+- deltxZ : 返回一个数值，表示一个滚轮的Z轴滚动量
+- deltaMode : 返回一个数值，表示一个单位。0为像素，1表示行，2表示页
+
+### 键盘事件
+
+- keydown : 按下键盘时触发的事件
+- keypress : 只要按下的键并非 Ctrl ， Alt ，Shift 和 Meta ，就接着触发 keypress 事件
+- keyup : 松开键盘时触发该事件
+
+如果用户一直按键不松开，就会连续触发键盘事件，触发的事件如下
+
+- keydown
+- keypress
+- keydown
+- keypress
+- 「重复以上过程」
+- keyup
+
+keyBoard 事件还有几个可配置字段
+
+- key : 默认为空字符串，返回按下的键的字符串
+- ctrlKey : 是否按下 ctrl 键
+- shiftKey : 是否按下 shift 键
+- altKey : 是否按下 alt 键
+- metaKey : 是否按下 meta 键
+- charCode : 返回一个数值，表示keypress按键的Unicode值，该属性已从标准中移除
+
+### 进度事件
+
+- abort : 当进度事件被中止时触发。如果发生错误，导致事件中止，不会触发该事件
+- error : 由于错误导致资源无法加载时触发
+- load : 进度成功结束时触发
+- loadstart : 进度开始时触发
+- loadend : 进度停止时触发，发生顺序在 `error` 事件、 `abort` 事件、`load` 事件后面
+- progress : 当操作处于进度之中，由传输的数据块不断触发
+- timeout : 进度超过限时触发
+
+
+有时候，图片加载会在脚本运行之前就完成，尤其是脚本放置在网页底部的时候，因此有可能使得 `load` 和 `error` 事件的监听函数根本不会执行，`error` 事件的监听函数最好放在 `img` 元素的 HTML 属性中，这样才能保证发生错误时百分之百执行。`error` 事件也不会冒泡
+
+`progress` 事件也有几个属性
+
+- lenthComputable : 返回一个布尔值，表示当前进度是否具有可计算的长度，如果为 `false` ，就表示当前进度无法测量
+- total : 返回一个数值，表示当前进度的总长度，如果是通过 HTTP 下载某个资源，表示内容本身的长度，不含 HTTP 头部的长度。如果 `lengthComputable` 属性为 `false` ，则 `total` 属性就无法去的正确的值
+- loaded : 返回一个数值，表示当前进度已经完成的数量。该属性除以 `total` 属性就可以得到目前进度的百分比
+
+### 拖拉事件
+
+拖拉指的是，用户在某个对象上按下鼠标键不放，拖动它到另一个位置，然后释放鼠标键，将该对象放在那里
+
+图片和链接不加本身就可以拖动，`Element` 节点需要设置 `draggable` 属性为 `true` ，但是这样鼠标就无法选中该字节内部的文字和子节了
+
+#### 事件种类
+
+当 `Element` 节点或选中的文本被拖拉时，就会持续触发拖拉事件，包括以下一些事件
+
+在拖拉节点上触发的事件
+
+- drag事件 ： 拖拉过程中，在被拖拉的节点上持续触发
+- dragstart事件 ：拖拉开始时触发，该事件的 `target` 属性是被拖拉的节点
+- dragend事件 ： 在拖拉结束时触发
+
+在目标节点上触发的事件
+
+- dragenter事件 ： 拖拉进入当前节点时触发
+- dragover事件 ：拖拉到当前节点上方时持续触发
+- dragleave事件 ：拖拉离开当前范围节点时触发
+- drop事件 ：被拖拉的节点释放，目标节点触发
+
+**注意**
+
+- 拖拉过程只触发以上这些拖拉事件，尽管鼠标在移动，但是鼠标事件不会触发
+- 将文件从操作系统拖拉进浏览器，不会触发 `dragstart` 和 `dragend` 事件
+- `dragenter` 和 `dragover` 事件默认设置为当前节点不允许drop，如果想要在目标节点上 `drop` 拖拉的数据，首先必须阻止这两个事件的默认行为，或者取消这两个事件
+
+```html
+<div ondragover="event.preventDefault()"></div>
+```
+
+#### DataTransfer 对象概述
+
+所有的拖拉事件都有一个 dataTransfer 属性，用来保存需要传递的数据。这个属性的值是一个 DataTransfer 对象
+
+拖拉的数据保存两方面的数据，数据的种类和数据的数值，种类是一个MIME字符串，数据的值是一个字符串
+
+拖拉开始时提供数据类型和数据值，`dragenter` 和 `dragover` 事件检查数据，以确定是否准许放下。
+
+#### DataTransfer 对象的属性
+
+**dropEffect**
+
+设置放下被拖拉节点时的效果
+
+- copy 复制被拖拉的节点
+- move 移动被拖拉的节点
+- link 创建指向被拖拉的节点的链接
+- none 无法放下被拖拉的节点
+
+一般在 `dragenter` 和 `dragover` 事件的监听函数中设置，对于 `dragstart`、`drag`、`dragleave` 这三个事件，该属性不起作用。进入目标节点后，用户可通过Shift键和Control键，改变初始值
+
+箭头会根据 `dropEffect` 属性改变形状
+
+**effectAllowed**
+
+`effectAllowed` 属性设置本次拖拉中允许的效果
+
+- copy 复制被拖拉的节点
+- move 移动被拖拉的节点
+- link 创建指向被拖拉节点的链接
+- copyLink 允许copy或link
+- copyMove 允许copy或move
+- linkMove 允许link或move
+- all 允许所有效果
+- none 无法放下被拖拉的节点
+- uninitialized 默认值，等同于all
+
+只要 `dropEffect` 属性和 `effectAllowed` 属性之中，有一个为none，就无法在目标节点完成  `drop` 操作
+
+**files**
+
+`files` 属性是一个 FileList 对象，如果本次拖拉不涉及文件，则属性为空的 FileList 对象
+
+通过 `files` 属性读取拖拉文件的信息，如果想要读取文件的内容，要使用 FileReader 对象
+
+**types**
+
+`types` 属性是一个数组，保存每一次拖拉的数据格式，比如拖拉文件，则格式信息为File
+
+#### DataTransfer 对象的方法
+
+**setData()**
+
+`setData` 方法用来设置事件所带有的指定类型的数据。它接受两个参数，第一个是数据类型，第二个是具体数据。如果指定的类型在现有数据中不存在，则该类型将写入 `types` 属性；如果已经存在，在该类型的现有数据将被替换。
+
+如果拖拉文本框或者拖拉选中的文本，会默认将文本数据添加到 `dataTransfer` 属性，不用手动指定。
+
+```html
+<div draggable="true" ondragstart="
+  event.dataTransfer.setData('text/plain', 'bbb')">
+  aaa
+</div>
+```
+
+上面代码中，拖拉数据实际上是 bbb ，而不是 aaa
+
+由于 `text/plain` 是最普遍支持的格式，为了保证兼容性，建议最后总是将数据保存一份纯文本的格式。
+
+```js
+var dt = event.dataTransfer;
+
+// 添加链接
+dt.setData("text/uri-list", "http://www.example.com");
+dt.setData("text/plain", "http://www.example.com");
+// 添加HTML代码
+dt.setData("text/html", "Hello there, <strong>stranger</strong>");
+dt.setData("text/plain", "Hello there, <strong>stranger</strong>");
+// 添加图像的URL
+dt.setData("text/uri-list", imageurl);
+dt.setData("text/plain", imageurl);
+```
+
+**getData()**
+
+`getData` 方法接受一个字符串（表示数据类型）作为参数，返回事件所带的指定类型的数据（通常是用 `setData` 方法添加的数据）。如果指定类型的数据不存在，则返回空字符串。通常只有 `drop` 事件触发后，才能取出数据。如果取出另一个域名存放的数据，将会报错。
+
+**clearData()**
+
+`clearData` 方法接受一个字符串（表示数据类型）作为参数，删除事件所带的指定类型的数据。如果没有指定类型，则删除所有数据。如果指定类型不存在，则原数据不受影响。
+
+**setDragImage()**
+
+拖动过程中（ `dragstart` 事件触发后），浏览器会显示一张图片跟随鼠标一起移动，表示被拖动的节点。这张图片是自动创造的，通常显示为被拖动节点的外观，不需要自己动手设置 。`setDragImage` 方法可以用来自定义这张图片，它接受三个参数，第一个是`img` 图片元素或者 `canvas` 元素，如果省略或为 `null` 则使用被拖动的节点的外观，第二个和第三个参数为鼠标相对于该图片左上角的横坐标和右坐标。
+
+```js
+div.addEventListener('dragstart',function(e){
+  var img = document.createElement("img");
+  img.src="http://path/to/img";
+  e.dataTransfer.setDragImage(img,0,0);
+},false)
+```
+
+### 触摸事件
+
+Touch 对象表示触摸点，多个触摸点由 TouchList 对象表示，TouchEvent 对象代表由触摸引发的事件。
+
+很多时候，触摸事件和鼠标事件同时触发，即使这个时候并没有用到鼠标。这是为了让那些只定义鼠标事件、没有定义触摸事件的代码，在触摸屏的情况下仍然能用。如果想避免这种情况，可以用 `preventDefault` 方法阻止发出鼠标事件。
+
+#### Touch 对象
+
+Touch 对象代表一个触摸点
+
+**identifier**
+
+`identifier` 属性表示 `Touch` 实例的独一无二的识别符。它在整个触摸过程中保持不变。
+
+**screenX，screenY，clientX，clientY，pageX，pageY**
+
+`screenX` 属性和 `screenY` 属性，分别表示触摸点相对于屏幕左上角的横坐标和纵坐标，与页面是否滚动无关。
+
+`clientX` 属性和 `clientY` 属性，分别表示触摸点相对于浏览器视口左上角的横坐标和纵坐标，与页面是否滚动无关。
+
+`pageX` 属性和 `pageY` 属性，分别表示触摸点相对于当前页面左上角的横坐标和纵坐标，包含了页面滚动带来的位移。
+
+**radiusX，radiusY，rotationAngle**
+
+`radiusX` 属性和 `radiusY` 属性，分别返回触摸点周围受到影响的椭圆范围的X轴和Y轴，单位为像素。
+
+`rotationAngle` 属性表示触摸区域的椭圆的旋转角度，单位为度数，在0到90度之间。
+
+上面这三个属性共同定义了用户与屏幕接触的区域，对于描述手指这一类非精确的触摸，很有帮助。指尖接触屏幕，触摸范围会形成一个椭圆，这三个属性就用来描述这个椭圆区域。
+
+**force**
+
+`force `属性返回一个0到1之间的数值，表示触摸压力。0代表没有压力，1代表硬件所能识别的最大压力。
+
+**target**
+
+`target` 属性返回一个Element节点，代表触摸发生的那个节点。
+
+#### TouchList 对象
+
+`TouchList` 对象是一个类似数组的对象，成员是与某个触摸事件相关的所有触摸点。
+
+`TouchList` 实例的 `identifiedTouch` 方法和 `item` 方法，分别使用id属性和索引值（从0开始）作为参数，取出指定的 `Touch` 对象。
+
+#### TouchEvent 对象
+
+**键盘相关属性**
+
+- altKey 是否按下alt键
+- ctrlKey 是否按下ctrl键
+- metaKey 是否按下meta键
+- shiftKey 是否按下shift键
+
+**changedTouches**
+
+`changedTouches` 属性返回一个 `TouchList` 对象，包含了由当前触摸事件引发的所有 `Touch` 对象（即相关的触摸点）。
+
+**targetTouches**
+
+`targetTouches` 属性返回一个 `TouchList` 对象，包含了触摸的目标Element节点内部，所有仍然处于活动状态的触摸点。
+
+**touches**
+
+`touches` 属性返回一个 `TouchList` 对象，包含了所有仍然处于活动状态的触摸点。
+
+#### 触摸事件的种类
+
+- touchstart：用户接触触摸屏时触发，它的target属性返回发生触摸的Element节点。
+- touchend：用户不再接触触摸屏时（或者移出屏幕边缘时）触发，它的target属性与touchstart事件的target属性是一致的，它的changedTouches属性返回一个TouchList对象，包含所有不再触摸的触摸点（Touch对象）。
+- touchmove：用户移动触摸点时触发，它的target属性与touchstart事件的target属性一致。如果触摸的半径、角度、力度发生变化，也会触发该事件。
+- touchcancel：触摸点取消时触发，比如在触摸区域跳出一个情态窗口（modal window）、触摸点离开了文档区域（进入浏览器菜单栏区域）、用户放置更多的触摸点（自动取消早先的触摸点）。
+
+### 表单事件
+
+#### Input事件，select事件，change事件
+
+`input` 事件当 `<input>`、`<textarea>` 的值发生变化时触发。此外，打开`contenteditable` 属性的元素，只要值发生变化，也会触发 `input` 事件。
+
+`input` 事件的一个特点，就是会连续触发，比如用户每次按下一次按键，就会触发一次`input` 事件。
+
+
+`select` 事件当在 `<input>`、`<textarea>` 中选中文本时触发。
+
+`Change` 事件当 `<input>`、`<select>`、`<textarea>` 的值发生变化时触发。它与`input` 事件的最大不同，就是不会连续触发，只有当全部修改完成时才会触发，而且`input` 事件必然会引发 `change` 事件。具体来说，分成以下几种情况。
+
+- 激活单选框（radio）或复选框（checkbox）时触发。
+- 户提交时触发。比如，从下列列表（select）完成选择，在日期或文件输入框完成选择。
+- 当文本框或 `textarea` 元素的值发生改变，并且丧失焦点时触发。
+
+#### reset事件，submit事件
+
+`reset` 事件当表单重置（所有表单成员变回默认值）时触发。
+
+`submit` 事件当表单数据向服务器提交时触发。注意，`submit` 事件的发生对象是 `form` 元素，**而不是 `button` 元素（即使它的类型是 `submit` ），因为提交的是表单，而不是按钮。**
+
+### 文档事件
+
+#### beforeunload 事件
+
+`beforeunload` 事件在窗口将要关闭，或者网页（即 `document` 对象）将要卸载时触发。它可以用来防止用户不小心关闭网页。
+
+根据标准，只要在该事件的回调函数中，调用了 `event.preventDefault()` ，或者 `event.returnValue` 属性的值是一个非空的值，就会自动跳出一个确认框，让用户确认是否关闭网页。如果用户点击“取消”按钮，网页就不会关闭。 `event.returnValue` 属性的值，会显示在确认对话框之中。
+
+许多手机浏览器默认忽视这个事件，而桌面浏览器也可以这样设置，所以这个事件有可能根本不生效。所以，**不能依赖它来阻止用户关闭窗口**。
+
+#### unload 事件
+
+unload事件在窗口关闭或者document对象将要卸载时触发，发生在window、body、frameset等对象上面。它的触发顺序排在beforeunload、pagehide事件后面。unload事件只在页面没有被浏览器缓存时才会触发，换言之，如果通过按下“前进/后退”导致页面卸载，并不会触发unload事件。
+
+当unload事件发生时，document对象处于一个特殊状态。所有资源依然存在，但是对用户来说都不可见，UI互动（window.open、alert、confirm方法等）全部无效。这时即使抛出错误，也不能停止文档的卸载。
+
+如果在window对象上定义了该事件，网页就不会被浏览器缓存。
+
+#### load事件，error事件
+
+`load` 事件在页面加载成功时触发，`error` 事件在页面加载失败时触发。注意，页面从浏览器缓存加载，并不会触发 `load` 事件。
+
+#### pageshow事件，pagehide事件
+
+默认情况下，浏览器会在当前会话（session）缓存页面，当用户点击“前进/后退”按钮时，浏览器就会从缓存中加载页面。
+
+pageshow事件在页面加载时触发，包括第一次加载和从缓存加载两种情况。如果要指定页面每次加载（不管是不是从浏览器缓存）时都运行的代码，可以放在这个事件的监听函数。
+
+pagehide事件与pageshow事件类似，当用户通过“前进/后退”按钮，离开当前页面时触发。它与unload事件的区别在于，如果在window对象上定义unload事件的监听函数之后，页面不会保存在缓存中，而使用pagehide事件，页面会保存在缓存中。
+
+#### DOMContentLoaded事件
+
+当HTML文档下载并解析完成以后，就会在document对象上触发DOMContentLoaded事件。这时，仅仅完成了HTML文档的解析（整张页面的DOM生成），所有外部资源（样式表、脚本、iframe等等）可能还没有下载结束。也就是说，这个事件比load事件，发生时间早得多。
+
+#### readystatechange事件
+
+readystatechange事件发生在Document对象和XMLHttpRequest对象，当它们的readyState属性发生变化时触发。
+
+#### scroll事件
+
+scroll事件在文档或文档元素滚动时触发，主要出现在用户拖动滚动条。
+
+#### resize事件
+
+resize事件在改变浏览器窗口大小时触发，发生在window、body、frameset对象上面。
+
+#### 焦点事件
+
+- focus事件：Element节点获得焦点后触发，该事件不会冒泡。
+- blur事件：Element节点失去焦点后触发，该事件不会冒泡。
+- focusin事件：Element节点将要获得焦点时触发，发生在focus事件之前。该事件会冒泡。Firefox不支持该事件。
+- focusout事件：Element节点将要失去焦点时触发，发生在blur事件之前。该事件会冒泡。Firefox不支持该事件。
+
+
+
+
 
