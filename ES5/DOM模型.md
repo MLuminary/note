@@ -1625,8 +1625,51 @@ function onTransitionEnd() {
 - animationiteration : 开始新一轮动画循环时触发。如果animationiteration-count属性等于1，该事件不触发，即只播放一轮的CSS动画，不触发animationiteration事件
 
 
+## Mutation Observer API
 
+### 概述
 
+用来监视 DOM 变动，异步触发而且不是马上触发，而是要等到当前所有 DOM 操作都结束才触发
 
+- 它等待所有脚本任务完成后，才会运行，即采用异步方式。
+- 它把 DOM 变动记录封装成一个数组进行处理，而不是一条条地个别处理 DOM 变动。
+- 它既可以观察发生在 DOM 的所有类型变动，也可以观察某一类变动。
+
+### MutationObserver 构造函数
+
+回调函数接受两个参数，第一个是变动数组，第二个是观察实例
+
+```js
+var observer = new MutationObserver(function (mutations, observer) {
+  mutations.forEach(function(mutation) {
+    console.log(mutation);
+  });
+});
+```
+
+### 实例方法
+
+#### observe()
+
+- 第一个参数是所要观察的 DOM 节点
+- 第二个参数是一个配置对象，用来指定所要观察的特定变动
+
+配置对象有以下几种
+
+- childList：子节点的变动。
+- attributes：属性的变动。
+- characterData：节点内容或节点文本的变动。
+- subtree：所有后代节点的变动。
+- attributeOldValue：类型为布尔值，表示观察attributes变动时，是否需要记录变动前的属性值。
+- characterDataOldValue：类型为布尔值，表示观察characterData变动时，是否需要记录变动前的值。
+- attributeFilter：类型为数组，表示需要观察的特定属性（比如['class','src']）。
+
+#### disconnect(),takeRecords()
+
+`disconnect` 方法用来停止观察。调用该方法后，DOM 再发生变动，也不会触发观察器。
+
+`takeRecords` 方法用来清除变动记录，即不再处理未处理的变动。该方法返回变动记录的数组。
+
+### MutationRecord 对象
 
 
