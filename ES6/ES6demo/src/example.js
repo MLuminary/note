@@ -1,1 +1,6 @@
-input.map(item => item + 1);
+var a = [];
+for(let i = 0 ; i < 5 ; i++){
+  a[i] = function(){
+    console.log(i);
+  }
+}
