@@ -1,6 +1,8 @@
-var a = [];
-for(let i = 0 ; i < 5 ; i++){
-  a[i] = function(){
-    console.log(i);
-  }
-}
+let obj = {
+  p: [
+    'Hello',
+    { y: 'World' }
+  ]
+};
+
+let { p: [x, { y }] } = obj;
