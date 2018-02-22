@@ -1,8 +1,4 @@
-let obj = {
-  p: [
-    'Hello',
-    { y: 'World' }
-  ]
-};
+let a = 5;
+let b = 10;
 
-let { p: [x, { y }] } = obj;
+tag`Hello ${ a + b } world ${ a * b }`;
