@@ -1,4 +1,6 @@
-let a = 5;
-let b = 10;
-
-tag`Hello ${ a + b } world ${ a * b }`;
+var x = 1;
+function foo(x, y = function() { x = 2; }) {
+  var x = 3;
+  y();
+  console.log(x);
+}

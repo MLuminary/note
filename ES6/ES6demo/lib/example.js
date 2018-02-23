@@ -1,10 +1,14 @@
 "use strict";
 
-var _templateObject = _taggedTemplateLiteral(["Hello ", " world ", ""], ["Hello ", " world ", ""]);
+var x = 1;
+function foo(x) {
+  var y = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {
+    x = 2;
+  };
 
-function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+  var x = 3;
+  y();
+  console.log(x);
+}
 
-var a = 5;
-var b = 10;
-
-tag(_templateObject, a + b, a * b);
+foo();
