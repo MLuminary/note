@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+  svg,canvas{
+    background-color: #000;
+  }
+  </style>
+</head>
+<body>
+  <div id="box">
+
+  </div>
+  <script src="two.js"></script>
+  <script>
+    var elem = document.getElementById('box');
+    //创建一个2d绘图对象
+    var params = {
+      width:600,
+      height:600,
+      //换成svg或者canvas
+      type:Two.Types.canvas
+    }
+
+    var two = new Two(params).appendTo(elem);
+
+    var circle = two.makeCircle(0,0,200);
+    circle.fill = "transparent";
+    circle.stroke = "#ddd";
+    var circle2 = two.makeCircle(0,0,80);
+    circle2.fill = '#F00';
+
+    var circle3 = two.makeCircle(0,0,40);
+    circle3.fill = "blue";
+    
+    var circle4 = two.makeCircle(0,0,80);
+    circle4.fill = "transparent";
+    circle4.stroke = "#ddd";
+    var circle5 = two.makeCircle(-80,0,20);
+    circle5.fill = "yellow";
+    
+    //建立组
+    var group1 = two.makeGroup(circle5,circle4,circle3);
+    //将其旋转中心点（参照点）放到200,0
+    group1.translation.set(200,0);
+
+    var group2 = two.makeGroup(circle,group1,circle2);
+    group2.translation.set(300,300);
+    
+    two.bind('update',function(frameCount){
+      group1.rotation+=3*Math.PI/180;
+      group2.rotation+=2*Math.PI/180;
+    }).play()
+
+  </script>
+</body>
+</html>
