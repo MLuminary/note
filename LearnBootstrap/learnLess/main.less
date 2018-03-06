@@ -1,0 +1,127 @@
+//注释
+
+/*会被保留*/
+
+//不会被保留
+
+//变量
+
+@test_width:300px;
+
+@test_height:300px+2;
+.box {
+  width: @test_width;
+  height: @test_height;
+  background-color: yellow;
+
+  .border;
+}
+
+//混合
+
+.border {
+  border: solid 5px pink;
+}
+
+.box {
+  .border;
+}
+
+//带参数混合
+
+.border_02(@border_width) {
+  border:solid yellow @border_width;
+}
+
+.test_mixin {
+  .border_02(30px);
+}
+
+
+//带默认值混合
+
+.border_03(@border_width:10px) {
+  border:solid green @border_width;
+}
+
+.test_mixin3 {
+  .border_03();
+}
+
+//匹配模式
+
+.pos(r){
+  position: relative;
+}
+
+.pos(a){
+  position: absolute;
+}
+
+.pos(f){
+  position: fixed;
+}
+
+.box {
+  .pos(a);
+}
+
+//变量
+
+@test_01:300px;
+
+.box_02{
+  width: @test_01 + 10;
+  color: #ccc - 10;
+}
+
+//嵌套规则
+
+.list {
+  width: 100px;
+  height: 100px;
+
+  li {
+    width: 20px;
+    height: 20px;
+    
+    span {
+      color: #fff;
+    }
+  }
+
+  a {
+    display: block;
+    color: #fff;
+    //代表上一层，此处代表a标签
+    &:hover {
+      color: red;
+    }
+  }
+}
+
+
+//@arguments
+.border_arg(@w:30px,@c:red,@xx:solid){
+  border:@arguments;
+}
+
+.border_bottom{
+  .border_arg();
+}
+
+//避免编译
+.test_03 {
+  width: ~'calc(300px - 30px)';
+}
+
+//important
+.test_important{
+  .border_arg() !important;
+}
+
+
+&_nav{
+  float: left;
+  font-size: 24px;
+}

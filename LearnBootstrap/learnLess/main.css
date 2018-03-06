@@ -1,0 +1,53 @@
+/*会被保留*/
+.box {
+  width: 300px;
+  height: 302px;
+  background-color: yellow;
+  border: solid 5px pink;
+}
+.border {
+  border: solid 5px pink;
+}
+.box {
+  border: solid 5px pink;
+}
+.test_mixin {
+  border: solid #ffff00 30px;
+}
+.test_mixin3 {
+  border: solid #008000 10px;
+}
+.box {
+  position: absolute;
+}
+.box_02 {
+  width: 310px;
+  color: #c2c2c2;
+}
+.list {
+  width: 100px;
+  height: 100px;
+}
+.list li {
+  width: 20px;
+  height: 20px;
+}
+.list li span {
+  color: #fff;
+}
+.list a {
+  display: block;
+  color: #fff;
+}
+.list a:hover {
+  color: red;
+}
+.border_bottom {
+  border: 30px #ff0000 solid;
+}
+.test_03 {
+  width: calc(300px - 30px);
+}
+.test_important {
+  border: 30px #ff0000 solid !important;
+}

@@ -1,0 +1,88 @@
+//导入混合文件
+// @import "mixins.less";
+
+@jd_width:100px;
+@jd_bgcolor:#ddd;
+
+#top {
+  width: @jd_width;
+}
+//混合
+#banner {
+  height: 300px;
+  #top;
+}
+
+#main {
+  background: #fff;
+  #banner()
+}
+
+//带参混合
+.size(@width,@height) {
+  width: @width;
+  height: @height;
+  border: 1px solid #333;
+  background-color: @jd_bgcolor;
+}
+
+//带默认参数的混合
+.size1(@width:100px,@height:100px){
+  width: @width;
+  height: @height;
+}
+
+#test {
+  font-size: 18px;
+  //调用带参数的选择器
+  .size(300px,400px);
+}
+
+#test p {
+  .size1();
+}
+
+#test span {
+  //只传一个的话，后面一个也会变成默认值
+  .size1(200px);
+}
+
+//嵌套规则
+
+#father {
+  width: 100px;
+  height: 100px;
+  #son {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+//函数
+#func {
+  //颜色减淡
+  color: lighten(#e4393c,20%);
+  //颜色加深
+  color: darken(#e4393c,30%);
+}
+
+@var : 1px + 5;
+
+.test1 {
+  font-size: @var;
+}
+
+
+.success1{
+  height: @success1;
+}
+
+@success1: 1px + 2em;
+
+nav ul {
+  &:extend(.inline);
+  background: blue;
+}
+.inline {
+  color: red;
+}
