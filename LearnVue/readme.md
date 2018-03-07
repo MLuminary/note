@@ -431,7 +431,7 @@ new Vue({
 })
 ```
 
-![lifecycle](/img/lifecycle.png)
+![lifecycle](img/lifecycle.png)
 
 
 ## 组件
