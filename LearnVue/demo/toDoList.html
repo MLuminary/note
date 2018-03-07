@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <title>Document</title>
+</head>
+<body>
+  <div id="example">
+    <to-do-box></to-do-box>
+  </div>
+  <script type="text/x-template" id="box-template">
+    <div>
+      <to-do-input></to-do-input>
+      <to-do-list :myList="list"></to-do-list>
+    </div>
+  </script>
+  <script type="text/x-template" id="input-template">
+    <div>
+      <h1>待做事物</h1>
+      <input type="text" v-model="msg">
+      <button v-on:click="handleAdd">add</button>
+    </div>
+  </script>
+  <script type="text/x-template" id="list-template">
+    <ul>
+      <to-do-item v-for="(message,index) in myList" :content="message" :index="index"></to-do-item>
+    </ul>
+  </script>
+  <script type="text/x-template" id="item-template">
+    <li>
+      <button v-on:click="deleteItem">delete</button>
+      <span>{{content}}</span>
+    </li>
+  </script>
+  <script>
+    Vue.component('to-do-box',{
+      template : '#box-template',
+      data : function(){
+        return {
+          list : []
+        }
+      },
+    })
+    Vue.component('to-do-input',{
+      template : '#input-template',
+      data : function(){
+        return {
+          msg : ''
+        }
+      },
+      methods: {
+        handleAdd:function(){
+          this.$parent.list.push(this.msg);
+        }
+      }
+    })
+    Vue.component('to-do-list',{
+      template : '#list-template',
+      props : ['myList'],
+    })
+    Vue.component('to-do-item',{
+      template : '#item-template',
+      props : ['content','index'],
+      methods: {
+        deleteItem:function(){
+          this.$parent.$parent.list.splice(this.index,1);
+        }
+      }
+      
+    })
+    new Vue({
+      el : '#example',
+    })
+  </script>
+</body>
+</html>

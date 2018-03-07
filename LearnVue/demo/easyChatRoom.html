@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <title>Easy ChatRoom</title>
+</head>
+
+<body>
+  <div id="example">
+    <chat-room></chat-room>
+  </div>
+  <script type="text/x-template" id="chat-room">
+    <div>
+      <ul>
+        <li v-for="item in message">{{item}}</li>
+      </ul>
+      <hr>
+      <person name="mike"></person>
+      <person name="lucy"></person>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="person">
+    <div>
+      <label for="Input">{{name}}:</label>
+      <input id="Input" type="text" v-model="Message">
+      <button v-on:click="send">发送</button>
+    </div>
+  </script>
+
+  <script>
+    Vue.component('chat-room', {
+      template: '#chat-room',
+      data: function () {
+        return {
+          message: []
+        }
+      }
+    })
+
+    Vue.component('person', {
+      template: '#person',
+      props : ['name'],
+      data: function () {
+        return {
+          Message: ''
+        }
+      },
+      methods: {
+        send: function () {
+          this.$parent.message.push(this.name + ": " + this.Message);
+        }
+      }
+    })
+
+    new Vue({
+      el: '#example'
+    })
+  </script>
+
+</body>
+
+</html>

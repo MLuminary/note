@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="example">
+    <!-- 指定盛放的组件 -->
+    <router-view></router-view>
+    <hr>
+    <router-link to="/myMain">跳转到Main页面</router-link>
+  </div>
+
+  <script>
+    var Login = Vue.component('login-component',{
+      template :`<div>
+                    <h1> this is login</h1>
+                    <button v-on:click='handleClick'>跳转到Main页面</button>
+                    <a href='#/myMain'>跳转到Main页面</a>
+                </div>`,
+      methods: {
+        handleClick:function(){
+          this.$router.push('/myMain')
+        }
+      }
+    })
+
+    var Main = Vue.component('main-component',{
+      template :'<h1> this is main</h1>'
+    })
+
+    //配置路由词典
+    var myRoutes = [
+      {
+        path:'/',
+        component : Login
+      },
+      {
+        path : '/myLogin',
+        component :  Login
+      },
+      {
+        path : '/myMain',
+        component :  Main
+      },
+      {
+        path : '*',
+        component : Login
+      }
+    ]
+
+    //创建路由实例
+    var myRouter = new VueRouter({
+      routes: myRoutes
+    })
+
+    new Vue({
+      el : '#example',
+      router:myRouter
+    })
+  </script>
+</body>
+
+</html>

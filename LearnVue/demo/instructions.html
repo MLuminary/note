@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <title>Document</title>
+</head>
+<body>
+  <div id="example">
+    {{ msg }}
+    <button v-if="hasMore">加载更多</button>
+    <p v-else="!hasMore">没有更多数据可以加载了</p>
+    <span v-if="score > 80">优秀</span>
+    <span v-else-if="score > 60">及格</span>
+    <span v-else>不及格</span>
+
+    <!-- 循环 -->
+    <ul>
+      <li v-for="item in list">
+        {{item}}
+      </li>
+    </ul>
+
+    <ul>
+      <li v-for="(item,key) in car">
+        <p>{{"属性为" + key + "值为" + item}}</p>
+      </li>
+    </ul>
+
+    <ul>
+        <li v-for="(item,val,index) in object">
+          <p>{{item.name}}</p>
+        </li>
+    </ul>
+
+    <!-- 在vue中绑定html属性，必须使用v-bind -->
+    <img v-bind:src="'img/'+imgName">
+    <!-- 缩写形式  -->
+    <img :src="'img/'+imgName">
+    <!-- 双向数据绑定 -->
+    <input v-model="kw" type="text">
+    <p>{{kw}}</p>
+
+    <!-- 两个数据相加 -->
+    <input type="number" v-model.number="num1">
+    <input type="number" v-model.number="num2">
+
+    <p>{{num1+num2}}</p>
+
+    <!-- 双向数据绑定修饰符 -->
+    
+    <!-- 点击 -->
+    <button v-on:click="handleClick">clickMe</button>
+    <button @click="handleClick">clickMe</button>
+    
+    <span v-pre >{{不显示}}</span>
+
+  </div>
+  <script>
+    new Vue({
+      el:'#example',
+      data: {
+        msg : 'Hello Directive',
+        hasMore : true,
+        score : 70,
+        list: [100,200,300],
+        car : {
+          name : 'WEY',
+          price: 20
+        },
+        imgName : 'logo.png',
+        kw : 'zhangsan',
+        num1 : 10,
+        num2 : 20,
+        object : [
+          {name:'dog',age:6},
+          {name:'cat',age:7}
+        ]
+      },
+      methods:{
+        handleClick:function(){
+          console.log('btn is clicked');
+        }
+      }
+    })
+  </script>
+</body>
+</html>

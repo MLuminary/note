@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <title>Document</title>
+</head>
+<body>
+  <div id="example">
+    <father></father>
+  </div>
+
+  <script type="text/x-template" id="father-template">
+    <div>
+      <h1>this is a father component</h1>
+      <button v-on:click="checkSonStatus">查看儿子在干嘛</button>
+      <son ref="mySon"></son>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="son-template">
+    <div>
+      <h1>this is a son component</h1>
+      <button v-on:click="checkFatherStatus">看看老爸在干嘛</button>      
+    </div>
+  </script>
+
+  <script>
+    Vue.component('father',{
+      template : '#father-template',
+      data : function(){
+        return {
+          name : 'hutchins'
+        }
+      },
+      methods : {
+        nowDoing : function() {
+          return 'is swimming...'
+        },
+        checkSonStatus : function() {
+          console.log(this.$refs.mySon.name+ " " + this.$refs.mySon.nowDoing());
+        }
+      }
+    })
+
+    Vue.component('son',{
+      template : '#son-template',
+      data : function(){
+        return {
+          name : 'zhangsan'
+        }
+      },
+      methods: {
+        nowDoing:function(){
+          return 'is studying'
+        },
+        checkFatherStatus : function(){
+          console.log(this.$parent.name+" "+this.$parent.nowDoing())
+        }
+      }
+    })
+
+    new Vue({
+      el:'#example'
+    })
+  </script>
+
+
+</body>
+</html>

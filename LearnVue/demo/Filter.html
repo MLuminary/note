@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <title>Document</title>
+</head>
+
+<body>
+  <div id="example">
+    {{msg}}
+    <p>价格为{{price | rounding | increase}}</p>
+    <div v-bind:id="rawId | currency"></div>
+  </div>
+  <script>
+    new Vue({
+      el: '#example',
+      data: {
+        msg: 'Hello Vue',
+        price: 100.06,
+        rawId : 'v'
+      },
+      filters: {
+        rounding: function (value) {
+          return parseInt(value);
+        },
+        increase: function(value){
+          return value * 1000;
+        }
+      }
+    })
+  </script>
+</body>
+
+</html>

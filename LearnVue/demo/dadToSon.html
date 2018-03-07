@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <title>Document</title>
+</head>
+<body>
+  <div id="example">
+    <father></father>
+  </div>
+
+  <script type="text/x-template" id="father-template">
+    <div>
+      <h1>This is a father component</h1>
+      <son :name="kw"></son>
+      <input type="text" v-model="kw">
+      <button @click="handleClick">Click</button>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="son-template">
+    <div>
+      <h1>This is a son component</h1>
+      <span>{{"接受到数据为:" + name}}</span>
+    </div>
+  </script>
+
+  <script>
+    //创建组件
+    //在组件中，data属性必须是一个带有返回值的函数
+    Vue.component('father',{
+      template : '#father-template',
+      data:function(){
+        return{
+          kw : ''
+        }
+      },
+      methods:{
+        handleClick:function(){
+          console.log('father metheds')
+        }
+      }
+    })
+
+    Vue.component('son',{
+      props : ['name'],
+      template : '#son-template'
+    })
+
+    new Vue({
+      el : '#example'
+    })
+  </script>
+</body>
+</html>
