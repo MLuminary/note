@@ -936,6 +936,39 @@ this.$http
     })
 ```
 
+## axios
+
+`get` 请求例子
+
+```js
+axios.get('/user', {
+    params: {
+      ID: 12345
+    }
+  })
+  .then(function (response) {
+    console.log(response);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+```
+
+`post` 请求例子
+
+```js
+axios.post('/user', {
+    firstName: 'Fred',
+    lastName: 'Flintstone'
+  })
+  .then(function (response) {
+    console.log(response);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+```
+
 ## 命令行安装
 
 Vue 提供一个官方命令行工具，可用于快速搭建大型单页应用 (SPA)。该工具为现代化的前端开发工作流提供了开箱即用的构建配置。只需几分钟即可创建并启动一个带热重载、保存时静态检查以及可用于生产环境的构建配置的项目：
