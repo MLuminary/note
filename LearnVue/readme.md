@@ -1032,6 +1032,13 @@ export default new Router({
 })
 ```
 
+## Vuex
+
+> 是一个专门为 Vue.js 应用程序开发的状态管理模式
+
+## 核心概念
+
+
 
 
 
@@ -1040,3 +1047,5 @@ export default new Router({
 https://cn.vuejs.org/v2/guide/
 
 https://github.com/pagekit/vue-resource/blob/develop/docs/http.md
+
+https://www.npmjs.com/package/axios
