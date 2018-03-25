@@ -1032,14 +1032,6 @@ export default new Router({
 })
 ```
 
-## Vuex
-
-> 是一个专门为 Vue.js 应用程序开发的状态管理模式
-
-## 核心概念
-
-
-
 
 
 ## 参考链接
