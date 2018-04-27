@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>CORS</title>
+</head>
+<body>
+  <script>
+    // 原生js
+    var xhr;
+    if(window.XMLHttpRequest){
+      xhr = new XMLHttpRequest();
+    }else{
+      xhr = new XDomainRequest(); //兼容 IE8/9
+    }
+
+    //前端设置 cookie
+    xhr.withCredentials = true;
+
+    xhr.open('post', 'http://localhost:3001/api/cors', true);
+    xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+    xhr.send('uname=hutchins');
+
+    xhr.onreadystatechange = function(){
+      if(xhr.readyState == 4 && xhr.status == 200){
+        console.log(xhr.responseText);
+      }
+    }
+  </script>
+</body>
+</html>
