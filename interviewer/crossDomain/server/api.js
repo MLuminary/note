@@ -24,6 +24,7 @@ module.exports = {
       res.writeHead(200, {
         'Access-Control-Allow-Credentials': 'true', //后端允许发送 cookie
         'Access-Control-Allow-Origin': 'http://localhost:3002'
+        // 'Set-Cookie': 'l=a123456;Path=/;Domain=www.domain2.com;HttpOnly'  // HttpOnly的作用是让js无法读取cookie
       });
 
       res.write(JSON.stringify(postData));

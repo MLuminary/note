@@ -29,5 +29,20 @@
       }
     }
   </script>
+  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+  <script>
+    $.ajax({
+      type: 'post',
+      data: {uname: "hutchins"},
+      url: 'http://localhost:3001/api/cors',
+      xhrFields: {
+        withCredentials: true //前端是否带 cookie
+      },
+      crossDomain: true,
+      success(data){
+        console.log(data);
+      }
+    })
+  </script>
 </body>
 </html>
