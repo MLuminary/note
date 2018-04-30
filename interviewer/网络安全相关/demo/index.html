@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>XSS模拟演示</title>
+</head>
+<body>
+  <h1>Hello&nbsp;<span id="uname"></span></h1>
+  <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+  <script>
+    $.ajax({
+      type:'get',
+      url:"http://localhost:3003/api/xss",
+      dataType:'json',
+      success:function(data){
+        $('#uname').html(data); //这样在前台就会插入 script 标签
+        
+        //进行HTML转义后便会插入正常的内容
+        // var str = data;
+        // str = str.replace(/</g,'&lt')
+        // str = str.replace(/>/g,'&gt')
+        // console.log(str);
+        // $('#uname').html(str);
+        // $('#uname').text(data); //但其实这样就可以完美插入
+      }
+    })
+    
+  </script>
+</body>
+</html>
