@@ -13,10 +13,12 @@ app.get('/api/xss',function(req, res){
   
   // xssFilter('<img src="ww" onerror="alert(1)">')
   console.log(xss('<img src="ww" onerror="alert(1)">',{
-    
+
   }));
   res.json('hutchins <script>console.log(1)</script>'); //模拟XSS攻击，后台返回了带脚本的字符串
 })
+
+
 
 var xssFilter = function(html){
   
