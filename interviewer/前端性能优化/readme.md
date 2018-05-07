@@ -171,4 +171,67 @@ html 渲染与加载的过程
 8. 对于动画新建图层
 9. 启用 GPU 硬件加速 `transform:translateZ(0);transfrom:tranlate3D(0,0,0)`
 
+## 浏览器缓存
+
+### cookie
+
+4kb
+
+用于浏览器端和服务器端的交互，用于客户端自身数据的存储
+
+cookie 中在相关域名下面 cdn 的流量耗损
+
+### locaStroage
+
+5m
+
+仅在客户端使用，不和服务器端进行通信
+
+### sessionStorage
+
+会话级别的浏览器存储
+
+5m
+
+仅在客户端使用，不和服务器端通信
+
+### indexedDB
+
+客户端存储大量结构化数据
+
+```js
+function openDB(name){
+  var request = window.indexedDB.open(name)
+  request.onerror = function(e){
+    console.log('open indexdb error)
+  }
+  //成功后
+  request.onsuccess = function(e){
+    
+  }
+  //插入数据
+  request.onupgradeneeded = function() {
+    
+  }
+}
+var myDB = {
+  name: 'testDB,
+  version: '1'
+}
+```
+
+### PWA
+
+- 可靠： 在没有网络环境中也能提供基本的页面访问，而不会出现「未连接互联网」
+- 快速： 针对网页渲染及网络数据访问有较好优化
+- 融入： 应用可以被增加到手机桌面，并且和普通应用一样有全屏、推送等特性
+
+###  Service Worker
+
+是一个脚本，浏览器独立于网页，将其在后台运行，为实现一些不依赖页面或者用户交互的特性打开一扇大门。
+
+**应用**
+
+- 使用拦截和处理网络请求的能力，去实现一个离线的  web 应用
+- 使用 Service Worker 在后台运行同时能和页面通信的能力，去实现大规模后台数据的处理
 
