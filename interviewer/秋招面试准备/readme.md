@@ -223,9 +223,243 @@ function deepCopy(source, target={}) {
         }
     }
 }
-
-
 ```
 
+### 框架
 
+#### 双向绑定
 
+##### 思路
+
+可以分为三个步骤
+
+- 输入框以及文本节点与 data 中的数据绑定
+- 输入框内容变化时，data 中的数据同步变化，这步实现了 view => model
+- data 中的数据变化时，文本节点的内容同步变化，实现 model => view
+
+##### 数据绑定
+
+通过 `documentFragment` 将挂载目标的所有子节点进行「劫持」，经过统一处理之后再整体插入挂载目标
+
+将「劫持」到的 dom 对象就行遍历，将有 `v-model` 属性名的元素和被 `{}` 包裹的文本提取出来赋值给 Vue 「实例对象」 的  `data` 对象中
+
+##### V => M
+
+如果 `input` 框上 `v-model` 属性，那么会调用其 `change` 方法，实时更新 `data` ，在「实例对象」的 `data` 对象中创建的值会用 `defineProperty`对其 `set` 和 `get` 进行改写,在此步骤中 `set` 只需要更新属性的值。
+
+##### M => V
+
+使用订阅发布模式「观察者模式」，发布者发布通知 => 主题对象「包含所有订阅者」收到通知推送给订阅者=>订阅者执行相应操作
+
+因此，`data` 中每有一个属性被创建，相应也会创建其主题对象 `dep` , 在处理「劫持」到的 html 时，每当与 `data` 中的属性绑定会在其对应的 `dep` 对象中添加一个订阅者 `watcher`,其中需要通过 `Dep` 定义一个全局的 `target` 属性暂存新建的 `watcher` ，添加后移除。 `watcher` 触发实例对象的 `get` 方法从而将 `Dep.target` 存储进去
+
+#### 虚拟 dom
+
+用于减少代码的维护和 dom 操作
+
+##### 思路
+
+- 用 javaScript 对象结构表示 DOM 树的结构，而不是直接操作 DOM 树；然后用 Js 对象构建一个真正的 DOM 树，插到文档当中
+- 当状态变更时，重新构造一棵新的对象树。然后与其之前的树做对比，记录两个树的差异
+- 把记录的差异应用到步骤1所构建的真正的 DOM 树上
+
+#### Get、Post 的区别
+
+- GET在浏览器回退时是无害的，而POST会再次提交请求。
+- GET产生的URL地址可以被Bookmark，而POST不可以。
+- GET请求会被浏览器主动cache，而POST不会，除非手动设置。
+- GET请求只能进行url编码，而POST支持多种编码方式。
+- GET请求参数会被完整保留在浏览器历史记录里，而POST中的参数不会被保留。
+- GET请求在URL中传送的参数是有长度限制的，而POST么有。
+- 对参数的数据类型，GET只接受ASCII字符，而POST没有限制。
+- GET比POST更不安全，因为参数直接暴露在URL上，所以不能用来传递敏感信息。
+- GET参数通过URL传递，POST放在Request body中。
+
+#### 数组去重
+
+##### 双层循环
+
+##### indexOf
+
+```js
+array.filter(function(item, index, array){
+        return array.indexOf(item) === index;
+    })
+```
+
+##### 已排序数组
+
+```js
+array.concat().sort().filter(function(item, index, array){
+        return !index || item !== array[index - 1]
+    })
+```
+
+#### 数据类型
+
+Number,String,Boolean,Null,Undefined,Symbol 「基本数据类型」Object [引用数据类型]
+
+#### Event Loop
+
+在 js 中任务源被分为「微任务」和「宏任务」
+
+微任务包括 `process.nextTick` , `promise` , `Object.observe` , `MutationOberver`
+
+宏任务包括 `script` , `setTimeout` , `setInterval` , `setImmediate`  , `I/O` , `UI rendering` 
+
+Event Loop 的执行顺序如下
+
+1.  执行一个宏任务
+2.  执行栈为空后，查询是否有微任务需要执行
+3.  如果有微任务执行微任务，必要的话渲染 UI
+4.  执行微任务结束后开启下一轮 Event Loop
+
+#### call, apply, bind
+
+改变其 this 指向，让新的对象可以执行该函数。思路也可以转变为给对象添加一个函数，然后在执行完后删除
+
+```js
+// call
+Function.prototype.myCall = function(context) {
+    let context = context || window
+    context.fn = this
+    let args = [...arguments].slice(1)
+    let results = context.fn(...args)
+    delete context.fn
+    return result
+}
+// apply
+Function.prototype.myApply = function (context) {
+  var context = context || window
+  context.fn = this
+
+  var result
+  // 需要判断是否存储第二个参数
+  // 如果存在，就将第二个参数展开
+  if (arguments[1]) {
+    result = context.fn(...arguments[1])
+  } else {
+    result = context.fn()
+  }
+
+  delete context.fn
+  return result
+}
+```
+
+#### 原型链
+
+每个函数都有 `prototype` 属性，除了 `Function.prototype.bind()` 该属性指向原型
+
+每个对象都有 `__proto__` 属性，指向创建该对象的构造函数的原型。
+
+##### 防抖
+
+```js
+function debounce(func, wait, immediate) {
+    let timer
+    return function() {
+        let context = this
+        let args = arguments
+        
+        clearTimeout(timeout)
+        if(immediate) {
+            // 如果已经执行过则不执行
+            let callNow = !timeout
+            timeout = setTimeout(function() {
+                timeout = null
+            }, wait)
+            if(callNow) func.apply(context, args)
+        } else {
+            timeout = setTimeout(function() {
+                func.apply(context, args)
+            }, wait)
+        }
+        
+    }
+}
+```
+
+#### service worker
+
+本质上充当 Web 应用程序与浏览器之间的代理服务器，也可以在网络可用时作为浏览器和网络间的代理。使得能够创建有效的离线体验，拦截网络请求并基于网络是否可用以及更新的资源是否驻留在服务器上来采取适当的动作。它们还允许访问推送通知和后台同步 API，**通常用来做缓存文件，提高首屏速度**
+
+#### 块级元素与行内元素
+
+- 块级元素的特点： 独自占一行，高度，行高以及外边距和内边距都可控制，可以容纳内联元素和其它块状元素
+- 行级元素的特点： 和其他元素都在一行，高度，行高以及外边距和内边距都不可控制，margin 和 padding 只能控制左右 ; 只能容纳内联元素或者文本
+
+- 常见块级元素：p,table,ul,div,form,h1
+- 常见内联元素：a,span,input,label,select
+
+#### 路由原理
+
+本质就是监听 URL 的变化，然后匹配路由规则，显示相应的页面，并且无须刷新。
+
+- Hash 模式
+
+  通过 `hashchange` 事件监听 URL 的变化
+
+- history 模式
+
+  通过 `state` , 浏览器回退触发 `popstate` 跳转触发 `pushState` 都是不会有页面刷新的
+
+#### 慢开始与拥塞避免
+
+慢开始就是发送量从小到大逐渐增加「呈指数型增长」，当拥塞窗口大于慢开始门限时，启用拥塞避免算法，让拥塞窗口缓慢增长「加1」，并将慢开始门限设置成出现拥塞时发送窗口的一半
+
+#### HTTP 常用返回码
+
+**2XX 成功**
+
+- 200 OK，表示从客户端发来的请求在服务器端被正确处理
+- 204 No content，表示请求成功，但响应报文不含实体的主体部分
+- 205 Reset Content，表示请求成功，但响应报文不含实体的主体部分，但是与 204 响应不同在于要求请求方重置内容
+- 206 Partial Content，进行范围请求
+
+**3XX 重定向**
+
+- 301 moved permanently，永久性重定向，表示资源已被分配了新的 URL
+- 302 found，临时性重定向，表示资源临时被分配了新的 URL
+- 303 see other，表示资源存在着另一个 URL，应使用 GET 方法获取资源
+- 304 not modified，表示服务器允许访问资源，但因发生请求未满足条件的情况
+- 307 temporary redirect，临时重定向，和302含义类似，但是期望客户端保持请求方法不变向新的地址发出请求
+
+**4XX 客户端错误**
+
+- 400 bad request，请求报文存在语法错误
+- 401 unauthorized，表示发送的请求需要有通过 HTTP 认证的认证信息
+- 403 forbidden，表示对请求资源的访问被服务器拒绝
+- 404 not found，表示在服务器上没有找到请求的资源
+
+**5XX 服务器错误**
+
+- 500 internal sever error，表示服务器端在执行请求时发生了错误
+- 501 Not Implemented，表示服务器不支持当前请求所需要的某个功能
+- 503 service unavailable，表明服务器暂时处于超负载或正在停机维护，无法处理请求
+
+### 设计模式
+
+#### 工厂模式
+
+隐藏创建实例的复杂度，只需要提供一个接口，简单清晰
+
+#### 单例模式
+
+核心就是保证全局只有一个对象可以访问，例如全局状态管理以及模态框等
+
+#### 适配器模式
+
+适配器用来解决两个接口不兼容的情况，不需要改变已有的接口，通过包装一层的方式实现两个接口的正常协作。
+
+#### 装饰模式
+
+装饰模式不需要改变已有的接口，作用是给对象添加功能。就像我们经常需要给手机戴个保护套防摔一样，不改变手机自身，给手机添加了保护套提供防摔功能。
+
+#### 代理模式
+
+代理是为了控制对对象的访问，不让外部直接访问到对象。在现实生活中，也有很多代理的场景。比如你需要买一件国外的产品，这时候你可以通过代购来购买产品。例如「事件代理」等
+
+#### 观察者模式
+
+通过一对一或者一对多的依赖关系，当对象发生改变时，订阅方都会收到通知
