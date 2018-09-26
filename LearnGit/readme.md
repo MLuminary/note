@@ -59,3 +59,7 @@
 ``git checkout -- readme.md`` //放弃readme.md文件
 
 ``git checkout .`` //放弃全部
+
+#### 假如本地代码和远程代码库不相连并且都有 commit 
+
+`git pull --allow-unrelated-histories`
