@@ -241,7 +241,7 @@ function deepCopy(source, target={}) {
 
 通过 `documentFragment` 将挂载目标的所有子节点进行「劫持」，经过统一处理之后再整体插入挂载目标
 
-将「劫持」到的 dom 对象就行遍历，将有 `v-model` 属性名的元素和被 `{}` 包裹的文本提取出来赋值给 Vue 「实例对象」 的  `data` 对象中
+将「劫持」到的 dom 对象进行遍历，将有 `v-model` 属性名的元素和被 `{}` 包裹的文本提取出来赋值给 Vue 「实例对象」 的  `data` 对象中
 
 ##### V => M
 
@@ -420,7 +420,7 @@ function debounce(func, wait, immediate) {
 **3XX 重定向**
 
 - 301 moved permanently，永久性重定向，表示资源已被分配了新的 URL
-- 302 found，临时性重定向，表示资源临时被分配了新的 URL
+- 302 found，临时性重定向，表示资源临时被分配了新的 URL，强制转换成 Get 方法
 - 303 see other，表示资源存在着另一个 URL，应使用 GET 方法获取资源
 - 304 not modified，表示服务器允许访问资源，但因发生请求未满足条件的情况
 - 307 temporary redirect，临时重定向，和302含义类似，但是期望客户端保持请求方法不变向新的地址发出请求
