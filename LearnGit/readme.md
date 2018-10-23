@@ -58,6 +58,10 @@
 
 `git pull --allow-unrelated-histories`
 
+#### 修改最近一次 commit 信息
+
+`git commit amend`
+
 #### 修改 commit 作者的信息
 
 **配置方法**
