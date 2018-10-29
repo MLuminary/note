@@ -138,3 +138,9 @@ git push --force --tags origin 'refs/heads/*'
 
 cd ..
 rm -rf repo.git
+
+#### 无权 git add 等问题
+
+```
+sudo chmod -R 0777 .git/objects/
+```
