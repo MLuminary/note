@@ -3,14 +3,15 @@ import Comment from './Comment'
 
 class CommentList extends Component {
   static defaultProps = {
-    comments: []
+    comments: [],
+    onDeleteComment: null
   }
 
   render() {
     return (
       <div>
         {this.props.comments.map((comment, i) =>
-          <Comment comment={comment} key={i} />
+          <Comment onDeleteComment={this.props.onDeleteComment} index={i} comment={comment} key={i} />
         )}
       </div>
     )

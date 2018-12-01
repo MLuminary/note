@@ -9,23 +9,44 @@ class CommentInput extends Component {
     }
   }
 
-  handleUsernameChange (event) {
+  componentDidMount() {
+    this.textRef.focus()
+    this._loadUsername()
+  }
+
+  _loadUsername = () => {
+    const username = localStorage.getItem('username')
+    if (username) {
+      this.setState({ username })
+    }
+  }
+
+  _saveUsername  = (username) => {
+    localStorage.setItem('username', username)
+  }
+
+  handleUsernameBlur = (event) => {
+    this._saveUsername(event.target.value)
+  }
+
+  handleUsernameChange = (event) => {
     this.setState({
       username: event.target.value
     })
   }
 
-  handleContentChange (event) {
+  handleContentChange = (event) => {
     this.setState({
       content: event.target.value
     })
   }
 
-  handleSubmit () {
+  handleSubmit = () => {
     if (this.props.onSubmit) {
       this.props.onSubmit({
         username: this.state.username,
         content: this.state.content,
+        createTime: +new Date()
       })
     }
     this.setState({ content: '' })
@@ -39,20 +60,23 @@ class CommentInput extends Component {
           <div className='comment-field-input'>
             <input
               value={this.state.username}
-              onChange={this.handleUsernameChange.bind(this)} />
+              onBlur={this.handleUsernameBlur}
+              onChange={this.handleUsernameChange} />
           </div>
         </div>
         <div className='comment-field'>
           <span className='comment-field-name'>评论内容：</span>
           <div className='comment-field-input'>
             <textarea
+              ref={(textRef) => this.textRef = textRef}
               value={this.state.content}
-              onChange={this.handleContentChange.bind(this)} />
+              onChange={this.handleContentChange} />
           </div>
         </div>
         <div className='comment-field-button'>
           <button
-            onClick={this.handleSubmit.bind(this)}>
+            onClick={this.handleSubmit}
+          >
             发布
           </button>
         </div>
