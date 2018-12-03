@@ -12,12 +12,11 @@ class App extends Component {
     }
   }
 
-  // static getDerivedStateFromProps(props) {
-  //   console.info(props)
-  //   return {
-  //     comments: props.data
-  //   }
-  // }
+  static getDerivedStateFromProps(props) {
+    return {
+      comments: props.data
+    }
+  }
 
   handleDeleteComment = (index) => {
     const { comments } = this.state

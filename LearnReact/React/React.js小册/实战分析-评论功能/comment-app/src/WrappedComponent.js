@@ -7,11 +7,13 @@ export default (WrappedComponent, name) => {
       this.state = { data: null }
     }
     // 如果是 Did 会造成子组件接受不到 props
-    componentWillMount() {
+    componentDidMount() {
       let data = localStorage.getItem(name)
       try {
         // 解析为 JSON 对象
-        this.setState({data: JSON.parse(data)})
+        this.setState(prevState => {
+          return {...prevState, ...{data: JSON.parse(data)}}
+        })
       } catch (e) {
         // 出错就当为普通字符串
         this.setState({data})

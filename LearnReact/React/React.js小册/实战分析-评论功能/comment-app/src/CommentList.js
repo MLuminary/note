@@ -10,7 +10,7 @@ class CommentList extends Component {
   render() {
     return (
       <div>
-        {this.props.comments.map((comment, i) =>
+        {this.props.comments && this.props.comments.map((comment, i) =>
           <Comment onDeleteComment={this.props.onDeleteComment} index={i} comment={comment} key={i} />
         )}
       </div>
