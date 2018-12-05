@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
 import Header from './Header'
 import Content from './Content'
+import { Provider } from './react-redux'
 import './index.css'
 
 function reducer(state, action) {
@@ -36,17 +37,7 @@ function createStore(reducer) {
 
 let store = createStore(reducer)
 
-
 class Index extends Component {
-  static childContextTypes = {
-    store: PropTypes.object
-  }
-
-  getChildContext() {
-    // Context
-    return { store }
-  }
-
   render () {
     return (
       <div>
@@ -58,6 +49,8 @@ class Index extends Component {
 }
 
 ReactDOM.render(
-  <Index />,
+  <Provider store={store}>
+    <Index />
+  </Provider>,
   document.getElementById('root')
 )

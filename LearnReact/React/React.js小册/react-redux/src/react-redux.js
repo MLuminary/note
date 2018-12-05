@@ -32,7 +32,8 @@ export const connect = (mapStateToProps, mapDispatchToProps) => (WrappedComponen
       this.setState({
         allProps: { // 整合普通的 props 和从 state 生成的 props
           ...stateProps,
-          ...this.props
+          ...this.props,
+          ...dispatchProps
         }
       })
     }
@@ -43,4 +44,28 @@ export const connect = (mapStateToProps, mapDispatchToProps) => (WrappedComponen
   }
 
   return Connect
+}
+
+export class Provider extends React.Component {
+  static propTypes = {
+    store: PropTypes.object,
+    children: PropTypes.any
+  }
+
+  static childContextTypes = {
+    store: PropTypes.object
+  }
+
+  getChildContext() {
+    return {
+      store: this.props.store
+    }
+  }
+
+  render() {
+    return (
+      <div>{this.props.children}</div>
+    )
+  }
+
 }
