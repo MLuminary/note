@@ -1,5 +1,3 @@
-
-
 # Diff - React 15
 
 > Diff 算法始终是 React 的重中之重，自己之前对于 Diff 只是停留在了解阶段，并未研究其实现过程。
@@ -70,8 +68,6 @@ https://segmentfault.com/a/1190000017039293
 
 https://github.com/hujiulong/blog/issues/6
 
-
-
 # React 合成事件
 
 当我们在组件上绑定事件时，React 并不会在该 DOM 元素上直接绑定事件处理器，React 内部自定义了一套事件系统，在这个系统上进行统一的事件订阅和分发。
@@ -119,8 +115,6 @@ React 的事件处理函数在冒泡阶段被触发。如果需要注册捕获�
 
 https://juejin.im/post/5d44e3745188255d5861d654
 
-
-
 # React Hook
 
 React Hook 的设计目的，就是加强函数组件，完全不使用「类」，就能写出一个全功能组件。组件尽量写成纯函数，如果需要外部功能和副作用，就用钩子把外部代码「钩」进来。
@@ -144,3 +138,14 @@ Hook 会建立 State 数组与 Setters 数组分别存储对应的数据，并�
 
 - 关于状态有关的逻辑重用及共享现在一般使用 render Props 或者 HOC，但是这两种都会造成组件数量和嵌套层级过深的问题。
 - 生命周期函数过多太乱，现在只有 `useEffect`一个函数管理 `mount` ,`didUpdate`  与 `unmount` 生命周期
+
+## 参考链接
+
+https://medium.com/@ryardley/react-hooks-not-magic-just-arrays-cd4f1857236e
+
+# React 推出新生命周期的原因
+
+- FIber 架构下，reconciler 会进行多次，reconciler 过程又会调用多次之前的 willxxx, 为了避免多次执行副作用代码而造成的性能安全和数据错乱等问题，因此将其删掉
+- Reconciler 时改用 static getDerivedStateFromProps ，不能获取 this, 因此基本不会存在副作用代码
+- getSnapShotBeforeUpdate 替换之前 willxxx，可讲之前 willxxx 的一些逻辑代码移到此处，此方法执行时已经是 commit 阶段，因此只会执行一次
+- componentDidCatch 这种组件**可以捕获并打印发生在其子组件树任何位置的 JavaScript 错误，并且，它会渲染出备用 UI**，而不是渲染那些崩溃了的子组件树。错误边界在渲染期间、生命周期方法和整个组件树的构造函数中捕获错误。
