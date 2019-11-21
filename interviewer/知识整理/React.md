@@ -8,13 +8,13 @@
 
 传统的 Diff 算法通过循环递归对节点进行依次对比， 算法的时间复杂度为 O(n^3) ，大体的实现思路如下：
 
-​	   PREV            NEW
+​ PREV NEW
 
-​	   A                     A
+​ A A
 
-​    B     C   <=>   D     C
+​ B C <=> D C
 
-D                                    B
+D B
 
 PREV 和 NEW 两棵 DOM 树所有节点两两对比，里面涉及两次遍历，时间复杂度为 O(n^2)，PREV 树的其中一个节点与 NEW 树的所有节点对比完后会建立一张 DIFF 表，**最后还要再遍历一遍 DIFF 表来选出最优的 DIFF 操作**，所以最后的算法时间复杂度为 O(n^3) 具体的代码其实我没有看过，但我感觉我的感觉可以写一下大体的代码实现来方便自己理解
 
@@ -60,8 +60,6 @@ React 中的 Diff 算法会将两棵树进行分层比较，一棵树中的节�
 
 如上图，通过添加的 Key 值，React 可以对比新老集合的节点，当 React 发现节点是相同节点时，只会将其进行位置的移动，节省了大量的开支。
 
-
-
 ## 参考链接
 
 https://segmentfault.com/a/1190000017039293
@@ -104,7 +102,7 @@ https://github.com/hujiulong/blog/issues/6
 
 ## 处理捕获
 
-React 的事件处理函数在冒泡阶段被触发。如果需要注册捕获阶段的事件处理函数，则应为事件名添加 `Capture` ，例如，处理捕获阶段的点击事件请使用 `onClickCapture` 而不是 `onClick` 
+React 的事件处理函数在冒泡阶段被触发。如果需要注册捕获阶段的事件处理函数，则应为事件名添加 `Capture` ，例如，处理捕获阶段的点击事件请使用 `onClickCapture` 而不是 `onClick`
 
 ## 合成事件与原生事件的注意点
 
@@ -137,7 +135,7 @@ Hook 会建立 State 数组与 Setters 数组分别存储对应的数据，并�
 ## 解决的问题
 
 - 关于状态有关的逻辑重用及共享现在一般使用 render Props 或者 HOC，但是这两种都会造成组件数量和嵌套层级过深的问题。
-- 生命周期函数过多太乱，现在只有 `useEffect`一个函数管理 `mount` ,`didUpdate`  与 `unmount` 生命周期
+- 生命周期函数过多太乱，现在只有 `useEffect`一个函数管理 `mount` ,`didUpdate` 与 `unmount` 生命周期
 
 ## 参考链接
 
@@ -149,3 +147,7 @@ https://medium.com/@ryardley/react-hooks-not-magic-just-arrays-cd4f1857236e
 - Reconciler 时改用 static getDerivedStateFromProps ，不能获取 this, 因此基本不会存在副作用代码
 - getSnapShotBeforeUpdate 替换之前 willxxx，可讲之前 willxxx 的一些逻辑代码移到此处，此方法执行时已经是 commit 阶段，因此只会执行一次
 - componentDidCatch 这种组件**可以捕获并打印发生在其子组件树任何位置的 JavaScript 错误，并且，它会渲染出备用 UI**，而不是渲染那些崩溃了的子组件树。错误边界在渲染期间、生命周期方法和整个组件树的构造函数中捕获错误。
+
+# Render Call Pattern
+
+https://www.zcfy.cc/article/react-patterns-render-callback-ndash-leonardo-garcia-crespo
